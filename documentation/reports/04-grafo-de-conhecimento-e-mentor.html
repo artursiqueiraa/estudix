@@ -1,0 +1,456 @@
+<title>Estudix — Mentor Digital de Aprendizagem</title>
+<style>
+  :root{
+    --bg: #FBF6EC; --bg-card: #FFFFFF; --bg-raised: #F3ECDC;
+    --ink: #2B2B2B; --ink-soft: #6E6558;
+    --primary: #1E3A5F; --primary-ink: #0F2338; --accent: #C97B4A;
+    --success: #4F6B45; --danger: #A24E27;
+    --border: rgba(43,43,43,0.12); --border-soft: rgba(43,43,43,0.07);
+    --code-bg: #F0E4CC; --shadow: 0 2px 10px rgba(43,32,15,0.06);
+  }
+  :root[data-theme="dark"]{
+    --bg: #171310; --bg-card: #1F1B16; --bg-raised: #26211A;
+    --ink: #EFE7D8; --ink-soft: #A69C89;
+    --primary: #8FB0D6; --primary-ink: #DCE9F7; --accent: #E0995F;
+    --success: #8FBB7C; --danger: #E3947A;
+    --border: rgba(239,231,216,0.14); --border-soft: rgba(239,231,216,0.08);
+    --code-bg: #2C2A22; --shadow: 0 2px 14px rgba(0,0,0,0.35);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg: #171310; --bg-card: #1F1B16; --bg-raised: #26211A;
+      --ink: #EFE7D8; --ink-soft: #A69C89;
+      --primary: #8FB0D6; --primary-ink: #DCE9F7; --accent: #E0995F;
+      --success: #8FBB7C; --danger: #E3947A;
+      --border: rgba(239,231,216,0.14); --border-soft: rgba(239,231,216,0.08);
+      --code-bg: #2C2A22; --shadow: 0 2px 14px rgba(0,0,0,0.35);
+    }
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: var(--bg); color: var(--ink);
+    font-family: -apple-system, "Segoe UI", "Inter", ui-sans-serif, system-ui, sans-serif;
+    font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased;
+  }
+  ::selection{ background: var(--accent); color: #fff; }
+  .serif{ font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif; }
+  h1,h2,h3{ text-wrap: balance; }
+  a{ color: var(--primary); }
+
+  .masthead{ max-width: 940px; margin: 0 auto; padding: 64px 28px 40px; border-bottom: 1px solid var(--border); }
+  .eyebrow{ font-size: 12.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 14px; }
+  .masthead h1{
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    font-weight: 700; font-size: clamp(32px, 5vw, 46px); line-height: 1.12; margin: 0 0 14px; color: var(--ink);
+  }
+  .masthead p{ max-width: 64ch; color: var(--ink-soft); font-size: 17px; margin: 0 0 22px; }
+  .meta-row{ display:flex; flex-wrap:wrap; gap:10px 22px; font-size:13px; color:var(--ink-soft); }
+  .meta-row span b{ color: var(--ink); font-weight: 600; }
+
+  .layout{ max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: 240px minmax(0,1fr); gap: 48px; padding: 40px 28px 100px; align-items: start; }
+  nav.toc{ position: sticky; top: 32px; font-size: 13.5px; }
+  nav.toc .toc-label{ font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 12px; font-weight: 600; }
+  nav.toc ol{ list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--border); }
+  nav.toc a{ display: block; padding: 6px 0 6px 16px; margin-left: -1px; border-left: 2px solid transparent; color: var(--ink-soft); text-decoration: none; }
+  nav.toc a:hover{ color: var(--primary); border-left-color: var(--border); }
+
+  main{ min-width: 0; }
+  section{ padding-top: 8px; margin-bottom: 56px; scroll-margin-top: 24px; }
+  section + section{ border-top: 1px solid var(--border-soft); padding-top: 44px; }
+  .sec-num{ font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; font-size: 14px; color: var(--accent); font-weight: 700; letter-spacing: 0.04em; }
+  h2{ font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; font-size: 27px; margin: 4px 0 6px; color: var(--ink); }
+  .sec-intro{ color: var(--ink-soft); max-width: 68ch; margin: 0 0 26px; font-size: 15.5px; }
+  h3{ font-size: 16px; margin: 30px 0 12px; color: var(--ink); font-weight: 700; }
+  p{ max-width: 72ch; margin: 0 0 14px; }
+  ul, ol{ max-width: 72ch; padding-left: 22px; margin: 0 0 16px; }
+  li{ margin-bottom: 7px; }
+  code{ font-family: ui-monospace, SFMono-Regular, "Cascadia Code", Consolas, monospace; font-size: 0.86em; background: var(--code-bg); padding: 1px 6px; border-radius: 5px; color: var(--ink); }
+
+  .diagram-wrap{
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 18px; margin: 18px 0 26px; box-shadow: var(--shadow); overflow-x: auto;
+  }
+
+  .callout{ background: var(--bg-card); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 10px; padding: 16px 18px; margin: 18px 0; box-shadow: var(--shadow); max-width: 72ch; }
+  .callout.risk{ border-left-color: var(--danger); }
+  .callout.ok{ border-left-color: var(--success); }
+  .callout p:last-child{ margin-bottom: 0; }
+  .callout-label{ font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; margin-bottom: 6px; }
+  .callout .callout-label{ color: var(--accent); }
+  .callout.risk .callout-label{ color: var(--danger); }
+  .callout.ok .callout-label{ color: var(--success); }
+
+  .twocol{ display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 18px 0 8px; }
+  @media (max-width: 640px){ .twocol{ grid-template-columns: 1fr; } }
+  .panel{ background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; box-shadow: var(--shadow); }
+  .panel h4{ margin: 0 0 10px; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; display:flex; align-items:center; gap:8px; }
+  .panel.strong h4{ color: var(--success); }
+  .panel.weak h4{ color: var(--danger); }
+  .panel ul{ margin: 0; padding-left: 18px; max-width: none; }
+  .panel li{ font-size: 14px; margin-bottom: 8px; }
+
+  .table-wrap{ overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; margin: 16px 0 26px; box-shadow: var(--shadow); }
+  table{ border-collapse: collapse; width: 100%; min-width: 720px; background: var(--bg-card); font-size: 13.5px; }
+  thead th{ text-align: left; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); background: var(--bg-raised); padding: 12px 16px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  tbody td{ padding: 13px 16px; border-bottom: 1px solid var(--border-soft); vertical-align: top; }
+  tbody tr:last-child td{ border-bottom: none; }
+  td ul{ margin: 0; padding-left: 16px; max-width: none; }
+  td li{ margin-bottom: 4px; }
+  .feat-name{ font-weight: 700; }
+  .pill{ display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: 0.02em; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+  .pill.reuse{ background: var(--success); color: #fff; }
+  .pill.new{ background: var(--primary); color: #fff; }
+  .pill.refine{ background: var(--accent); color: #fff; }
+  .pill.alta{ background: var(--danger); color: #fff; }
+  .pill.media{ background: var(--accent); color: #fff; }
+  .pill.baixa{ background: var(--border); color: var(--ink-soft); }
+
+  .entity{ background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; margin-bottom: 16px; box-shadow: var(--shadow); }
+  .entity-head{ display:flex; align-items:baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+  .entity-name{ font-family: ui-monospace, SFMono-Regular, monospace; font-weight: 700; font-size: 15px; color: var(--primary); }
+  .entity-tag{ font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); border: 1px solid var(--border); border-radius: 999px; padding: 2px 9px; }
+  .entity-fields{ font-size: 13.5px; color: var(--ink-soft); margin: 0; }
+  .entity-fields b{ color: var(--ink); font-weight: 600; }
+
+  .flow{ list-style: none; margin: 20px 0; padding: 0; position: relative; }
+  .flow li{ position: relative; padding: 2px 0 26px 34px; max-width: 68ch; }
+  .flow li::before{ content: ""; position: absolute; left: 6px; top: 4px; bottom: -4px; width: 1px; background: var(--border); }
+  .flow li:last-child::before{ display:none; }
+  .flow li::after{ content: ""; position: absolute; left: 0; top: 4px; width: 13px; height: 13px; border-radius: 50%; background: var(--bg-card); border: 2px solid var(--accent); }
+  .flow .step-title{ font-weight: 700; margin-bottom: 3px; }
+  .flow .step-body{ color: var(--ink-soft); font-size: 14.5px; }
+
+  .risk-grid{ display: flex; flex-direction: column; gap: 12px; margin: 18px 0; }
+  .risk-card{ background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow); padding: 15px 18px; display: grid; grid-template-columns: 1fr auto; gap: 10px 16px; align-items: start; }
+  .risk-card .risk-title{ font-weight: 700; font-size: 14.5px; margin-bottom: 4px; }
+  .risk-card .risk-body{ font-size: 13.5px; color: var(--ink-soft); grid-column: 1 / -1; }
+  .risk-card .risk-mitig{ font-size: 13px; color: var(--ink); grid-column: 1 / -1; margin-top: 2px; }
+  .risk-card .risk-mitig b{ color: var(--success); }
+
+  .mentor-msg{
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 14px 16px; margin-bottom: 10px; box-shadow: var(--shadow);
+    display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start;
+  }
+  .mentor-msg .mm-icon{
+    width: 30px; height: 30px; border-radius: 8px; background: var(--bg-raised);
+    display:flex; align-items:center; justify-content:center; font-size: 15px; flex-shrink: 0;
+  }
+  .mentor-msg .mm-rule{ font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); font-weight: 700; margin-bottom: 3px; }
+  .mentor-msg .mm-text{ font-size: 14px; color: var(--ink); font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; font-style: italic; }
+
+  footer{ max-width: 940px; margin: 0 auto; padding: 0 28px 80px; color: var(--ink-soft); font-size: 13px; }
+
+  /* mermaid needs to inherit readable colors in both themes */
+  pre.mermaid{ background: transparent; }
+</style>
+
+<header class="masthead">
+  <div class="eyebrow">Análise Arquitetural · Não implementar</div>
+  <h1 class="serif">Do organizador de disciplinas ao mentor digital</h1>
+  <p>Avaliação crítica da hierarquia Perfil → Currículo → Disciplinas → Módulos → Tópicos → Conhecimento → Plano de Estudos → Mentor → Aluno, e a arquitetura recomendada para que o Estudix organize <em>conhecimento</em>, não apenas matérias.</p>
+  <div class="meta-row">
+    <span>Preparado para: <b>arturgost128@gmail.com</b></span>
+    <span>Data: <b>15 de julho de 2026</b></span>
+    <span>Escopo: <b>análise e planejamento — nenhum código alterado</b></span>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="toc">
+    <div class="toc-label">Neste relatório</div>
+    <ol>
+      <li><a href="#avaliacao">1 · Avaliação crítica</a></li>
+      <li><a href="#arquitetura">2 · Arquitetura recomendada</a></li>
+      <li><a href="#modelo">3 · Modelo de dados</a></li>
+      <li><a href="#fluxo">4 · Fluxo completo</a></li>
+      <li><a href="#motor">5 · Motor de conhecimento</a></li>
+      <li><a href="#mentor">6 · Mentor Digital</a></li>
+      <li><a href="#atualizacao">7 · Estratégia de atualização</a></li>
+      <li><a href="#escala">8 · Escalabilidade</a></li>
+      <li><a href="#diferenciais">9 · Diferenciais competitivos</a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+    <section id="avaliacao">
+      <div class="sec-num">1</div>
+      <h2 class="serif">Avaliação crítica da proposta</h2>
+      <p class="sec-intro">A pergunta feita foi direta — "explique se existe uma arquitetura melhor". Existe uma variação importante a fazer, então vale começar por ela antes de desenhar qualquer entidade.</p>
+
+      <div class="twocol">
+        <div class="panel strong">
+          <h4>O que a proposta acerta</h4>
+          <ul>
+            <li>Separar "o que é conhecimento" de "qual currículo organiza esse conhecimento" é exatamente a decisão certa — é o único jeito de "Função do 2º Grau" existir uma vez só e servir Ensino Médio, ENEM, Vestibular e Concurso ao mesmo tempo.</li>
+            <li>Colocar o Mentor como conceito central, não como tela extra, é o que separa "organizador" de "mentor" — é a mesma tese do relatório de produto anterior ("esse app entende como eu estudo"), agora com arquitetura por trás.</li>
+            <li>Exigir que as recomendações do mentor sejam baseadas em regra, e não só em IA, é maduro: funciona offline, é testável, é previsível — e é exatamente a base determinística que a camada de IA já prevista no roadmap técnico (<code>AIProvider</code>) deve aprimorar depois, não substituir do zero.</li>
+          </ul>
+        </div>
+        <div class="panel weak">
+          <h4>Onde a hierarquia proposta cria confusão</h4>
+          <ul>
+            <li>A cadeia de 9 passos lê como um <i>pipeline linear</i>, mas na prática são <b>duas estruturas de dado</b> (o grafo de conhecimento e o currículo) que se cruzam, mais um <b>serviço contínuo</b> (o Mentor) — não um degrau único no meio do caminho.</li>
+            <li>"Conhecimento" aparece como uma camada <i>abaixo</i> de "Tópicos" na lista, mas pela própria seção "Base de Conhecimento" do pedido, ele não é um nível a mais — é o <b>conteúdo que cada Tópico carrega</b>. Modelar como 6ª camada separada obriga uma relação 1:1 artificial com Tópico.</li>
+            <li>"Plano de Estudos" fixo entre Tópicos e Mentor sugere um passo único e estático, mas ele é uma <b>saída recalculável</b> do Mentor (junto com o <code>studyPlanGenerator</code> já definido no roadmap técnico) — muda toda vez que o aluno estuda, erra um flashcard ou perde um dia.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout ok">
+        <div class="callout-label">Reformulação proposta</div>
+        <p>Em vez de uma escada de 9 degraus, duas estruturas relativamente estáveis (o <b>Grafo de Conhecimento</b> e a <b>Camada de Currículo</b>) mais um <b>Aluno</b> que evolui, cruzados continuamente por um <b>Mentor</b> — ver diagrama na próxima seção. Nenhum conceito do pedido original é descartado; eles só deixam de ser degraus de uma escada e passam a ser as peças certas de um sistema.</p>
+      </div>
+    </section>
+
+    <section id="arquitetura">
+      <div class="sec-num">2</div>
+      <h2 class="serif">Arquitetura recomendada</h2>
+      <p class="sec-intro">Duas estruturas estáveis, um estado que evolui, um serviço contínuo que os cruza.</p>
+
+      <div class="diagram-wrap">
+<pre class="mermaid">
+flowchart TB
+    subgraph GC["GRAFO DE CONHECIMENTO — estável, compartilhado, bundle"]
+        direction TB
+        AR[Área] --> DI[Disciplina]
+        DI --> MO[Módulo]
+        MO --> TO["Tópico\n+ Base de Conhecimento"]
+        TO -. pré-requisito .-> TO
+    end
+
+    subgraph CU["CAMADA DE CURRÍCULO — por país / UF / instituição / exame, bundle"]
+        direction TB
+        PE[Perfil Educacional] --> RC["resolveCurriculo()"]
+        RC --> CD["CurriculumDocument\n(seleção + ordem + peso)"]
+    end
+
+    CD -- "referencia (não copia)" --> TO
+
+    subgraph AL["ALUNO — dado do usuário, AsyncStorage"]
+        direction TB
+        MA[Matérias provisionadas] --> PR[Progresso / notas / flashcards]
+    end
+
+    CD -- provisiona --> MA
+
+    ME{{"MENTOR — serviço contínuo\nregras de negócio + comportamento"}}
+    TO --> ME
+    CD --> ME
+    PR --> ME
+    ME --> OR["Orientação no momento certo"]
+    ME --> PL["Plano de Estudos\n(recalculado, não fixo)"]
+</pre>
+      </div>
+
+      <h3>Por que isso resolve o pedido de "desacoplamento"</h3>
+      <p>O Grafo de Conhecimento não sabe que currículos existem. A Camada de Currículo não guarda conteúdo — guarda só <b>referências</b> (quais tópicos, em que ordem, com que peso, em que bimestre) para o mesmo grafo. Um mesmo <code>Tópico</code> "Função do 2º Grau" pode ser referenciado por um <code>CurriculumDocument</code> da BNCC, outro do ENEM e outro de um edital de concurso, sem existir três vezes.</p>
+
+      <h3>Por que o Mentor não é um passo, é um serviço</h3>
+      <p>O Mentor lê as três estruturas toda vez que é acionado — abrir um tópico, terminar um Pomodoro, errar um flashcard, virar o dia. Ele não "roda uma vez no fim do fluxo"; ele roda a cada interação relevante, e é isso que sustenta a "aprendizagem personalizada contínua" pedida na seção correspondente do briefing.</p>
+    </section>
+
+    <section id="modelo">
+      <div class="sec-num">3</div>
+      <h2 class="serif">Modelo de dados</h2>
+      <p class="sec-intro">Entidades, com a decisão de design mais delicada explicada primeiro: onde vivem "competências e habilidades".</p>
+
+      <div class="callout risk">
+        <div class="callout-label">A tensão que precisa ser resolvida explicitamente</div>
+        <p>O pedido lista <b>competências</b> e <b>habilidades</b> como parte da "Base de Conhecimento" de cada Tópico — mas habilidades no sentido BNCC (códigos como <code>EF06MA01</code>) são específicas de <b>um</b> currículo. Um edital de concurso não tem código BNCC nenhum para o mesmo conteúdo. Se essas informações morarem <i>dentro</i> do Tópico, ele deixa de ser reutilizável — quebra exatamente o "Desacoplamento" pedido. Solução: o Tópico carrega o conteúdo <b>pedagógico</b> (resumo, fórmulas, exemplos...); competências/habilidades <b>específicas de um currículo</b> vivem na <i>referência</i> Currículo→Tópico, não no Tópico.</p>
+      </div>
+
+      <h3>Grafo de Conhecimento (estático, bundle, currículo-agnóstico)</h3>
+      <div class="entity">
+        <div class="entity-head"><span class="entity-name">Discipline</span><span class="entity-tag">= catalogSlug do relatório técnico</span></div>
+        <p class="entity-fields"><b>slug</b>, <b>name</b>, <b>aliases[]</b>, <b>areaSlug</b> <i>(agrupamento amplo opcional: Exatas, Humanas, Linguagens)</i>. Reaproveita a identidade de disciplina já desenhada no primeiro relatório técnico — não duplica.</p>
+      </div>
+      <div class="entity">
+        <div class="entity-head"><span class="entity-name">Module</span><span class="entity-tag">novo</span></div>
+        <p class="entity-fields"><b>id</b>, <b>disciplineSlug</b>, <b>name</b> <i>(ex.: "Funções")</i>, <b>description</b>, <b>defaultOrder</b> <i>(sugestão — o currículo pode sobrescrever)</i>.</p>
+      </div>
+      <div class="entity">
+        <div class="entity-head"><span class="entity-name">Topic</span><span class="entity-tag">novo — o nó atômico do grafo</span></div>
+        <p class="entity-fields"><b>id</b>, <b>moduleId</b>, <b>name</b> <i>(ex.: "Função do 2º Grau")</i>, <b>prerequisites[]</b> <i>(ids de outros Topics — grafo dirigido dentro do próprio conhecimento)</i>, <b>relatedTopics[]</b>, <b>difficulty</b> <i>(1–5, característica intrínseca do conteúdo)</i>, <b>avgMinutes</b>, e o payload <code>knowledgeBase</code>: resumo, definição, importância, objetivos, fórmulas, exemplos, aplicações, exercícios sugeridos, erros comuns, curiosidades, palavras-chave, mapa mental, glossário, técnicas de estudo, métodos de memorização, materiais recomendados, FAQ, <b>templates</b> de flashcards/checklist/quiz diagnóstico <i>(modelos a copiar na materialização — não os dados do usuário em si)</i>.</p>
+      </div>
+
+      <h3>Camada de Currículo (estático, bundle, por país/UF/instituição/exame)</h3>
+      <div class="entity">
+        <div class="entity-head"><span class="entity-name">CurriculumDocument</span><span class="entity-tag">evolução do relatório técnico anterior</span></div>
+        <p class="entity-fields"><b>id</b>, <b>pais</b>, <b>escopo</b> <i>('instituicao' | 'estadual' | 'bncc' | 'nacional' | 'generico' — cadeia de resolução com 5 níveis, incluindo a nova camada de instituição pedida)</i>, <b>uf</b>, <b>instituicaoId</b>, <b>modalidade</b>, <b>serie</b>, <b>vigencia</b>.</p>
+      </div>
+      <div class="entity">
+        <div class="entity-head"><span class="entity-name">CurriculumTopicRef</span><span class="entity-tag">a peça que resolve o desacoplamento</span></div>
+        <p class="entity-fields"><b>curriculumDocId</b>, <b>topicId</b> <i>(referência ao grafo, nunca cópia)</i>, <b>ordem</b>, <b>periodoSugerido</b> <i>(bimestre/trimestre — aqui, não no Topic, porque muda por currículo)</i>, <b>habilidadesBNCC[]</b> <i>(só quando escopo é BNCC)</i>, <b>peso</b> <i>(opcional — o quanto esse currículo enfatiza esse tópico)</i>.</p>
+      </div>
+
+      <h3>Aluno (dado do usuário, AsyncStorage — extensões pequenas do que já existe)</h3>
+      <div class="entity">
+        <div class="entity-head"><span class="entity-name">Materia</span><span class="entity-tag">existente + campo já previsto</span></div>
+        <p class="entity-fields">Mantém <b>catalogSlug</b> e <b>curriculumDocId</b> já propostos anteriormente — sem mudança aqui.</p>
+      </div>
+      <div class="entity">
+        <div class="entity-head"><span class="entity-name">MateriaTopicProgress</span><span class="entity-tag">novo, leve</span></div>
+        <p class="entity-fields"><b>materiaId</b>, <b>topicId</b>, <b>status</b> <i>('não iniciado'|'em progresso'|'dominado')</i>, alimentado pelo quiz diagnóstico e pelo desempenho real — é o que dá ao Mentor "memória" sobre onde o aluno está.</p>
+      </div>
+      <div class="entity">
+        <div class="entity-head"><span class="entity-name">checklistCategories / flashcards / anotacoes</span><span class="entity-tag">reaproveitadas, sem mudança de estrutura</span></div>
+        <p class="entity-fields">Continuam exatamente como já eram — materializadas a partir dos <i>templates</i> do Tópico na primeira visita, com o campo <b>origin</b> já definido anteriormente. O usuário edita, apaga, substitui — é dado dele, ponto final.</p>
+      </div>
+    </section>
+
+    <section id="fluxo">
+      <div class="sec-num">4</div>
+      <h2 class="serif">Fluxo completo</h2>
+      <ol class="flow">
+        <li>
+          <div class="step-title">Onboarding — perfil completo</div>
+          <div class="step-body">País, UF, município, rede, série, turno, modalidade, objetivo, disponibilidade, data da prova, dificuldades, método — cada campo opcional, cada um refina a resolução.</div>
+        </li>
+        <li>
+          <div class="step-title">Resolução curricular</div>
+          <div class="step-body"><code>resolveCurriculo(perfil)</code> percorre 5 níveis (instituição → estadual → BNCC → nacional → genérico) e sempre retorna um <code>CurriculumDocument</code>.</div>
+        </li>
+        <li>
+          <div class="step-title">Provisionamento das disciplinas</div>
+          <div class="step-body">As <code>CurriculumTopicRef</code> do documento resolvido determinam quais disciplinas/módulos existem para esse aluno; as <code>Materia</code> são criadas de uma vez, reaproveitando <code>saveMateria</code>.</div>
+        </li>
+        <li>
+          <div class="step-title">Primeira abertura de um Tópico — "Começar a Estudar"</div>
+          <div class="step-body">O conteúdo do <code>Topic.knowledgeBase</code> é exibido; os templates de flashcards/checklist são materializados como dado do usuário nesse momento (não antes).</div>
+        </li>
+        <li>
+          <div class="step-title">O Mentor entra em cena</div>
+          <div class="step-body">Antes do aluno começar, o Mentor já cruzou <code>Topic.prerequisites</code> com <code>MateriaTopicProgress</code> e o histórico de foco — a orientação (seção 6) aparece nesse instante, não depois.</div>
+        </li>
+        <li>
+          <div class="step-title">Quiz diagnóstico (opcional)</div>
+          <div class="step-body">Atualiza <code>MateriaTopicProgress</code>; o Mentor reage à próxima abertura de tela com recomendações já ajustadas.</div>
+        </li>
+        <li>
+          <div class="step-title">Ciclo contínuo</div>
+          <div class="step-body">Cada sessão de Pomodoro, cada nota registrada, cada flashcard revisado realimenta <code>MateriaTopicProgress</code> — o Plano de Estudos e as próximas orientações do Mentor são recalculados, nunca fixos.</div>
+        </li>
+      </ol>
+    </section>
+
+    <section id="motor">
+      <div class="sec-num">5</div>
+      <h2 class="serif">Motor de conhecimento</h2>
+      <p class="sec-intro">Como Disciplina, Módulo, Tópico e conteúdo reutilizável ficam organizados sem virar um arquivo monolítico.</p>
+      <ul>
+        <li><b>Particionamento por Disciplina, não por currículo.</b> Como o grafo é currículo-agnóstico, o bundle é dividido por disciplina (<code>src/data/knowledge/matematica.json</code>, <code>quimica.json</code>...) — carregado sob demanda conforme as disciplinas efetivamente provisionadas para o aluno, igual ao particionamento por UF já definido para o currículo, mas num eixo diferente.</li>
+        <li><b><code>catalogService</code> formalizado.</b> O serviço de acesso ao catálogo já previsto no roadmap técnico passa a ser explicitamente a porta de entrada do Grafo de Conhecimento: <code>getModulesByDiscipline()</code>, <code>getTopic(id)</code>, <code>getPrerequisiteChain(topicId)</code> — funções puras, sem efeito colateral, testáveis isoladamente.</li>
+        <li><b>Reutilização é o padrão, não a exceção.</b> Um <code>Topic</code> só existe uma vez; qualquer currículo que precise dele apenas cria uma <code>CurriculumTopicRef</code> apontando pro mesmo id. Adicionar o ENEM depois do Ensino Médio já coberto é, na maioria dos casos, <b>90% referência a tópicos que já existem</b> — não recriação de conteúdo.</li>
+        <li><b>Pré-requisitos como grafo dirigido dentro do próprio conhecimento</b> (<code>Topic.prerequisites</code>), independente de qual currículo está sendo seguido — é o que permite ao Mentor dizer "revise Álgebra antes de Cinemática" mesmo quando os dois tópicos vêm de currículos diferentes.</li>
+      </ul>
+    </section>
+
+    <section id="mentor">
+      <div class="sec-num">6</div>
+      <h2 class="serif">Mentor Digital</h2>
+      <p class="sec-intro">Um motor de regras — não um chatbot — que cruza o Tópico, a referência curricular e o histórico real do aluno. Cada mensagem abaixo é a saída de uma regra específica e explicável, no mesmo espírito dos exemplos do pedido original.</p>
+
+      <div class="mentor-msg">
+        <div class="mm-icon">📋</div>
+        <div>
+          <div class="mm-rule">Regra: pré-requisito fraco</div>
+          <div class="mm-text">"Antes de estudar Cinemática, recomendamos revisar Álgebra — sua última nota ficou abaixo de 6."</div>
+        </div>
+      </div>
+      <div class="mentor-msg">
+        <div class="mm-icon">⚠️</div>
+        <div>
+          <div class="mm-rule">Regra: dificuldade alta + pouca base</div>
+          <div class="mm-text">"Você provavelmente terá dificuldade neste conteúdo porque ainda tem poucas sessões de foco em Ligações Químicas."</div>
+        </div>
+      </div>
+      <div class="mentor-msg">
+        <div class="mm-icon">⏱️</div>
+        <div>
+          <div class="mm-rule">Regra: Topic.avgMinutes ÷ settings.focusMin</div>
+          <div class="mm-text">"Reserve aproximadamente 40 minutos — dá para fazer dois ciclos de Pomodoro."</div>
+        </div>
+      </div>
+      <div class="mentor-msg">
+        <div class="mm-icon">🔁</div>
+        <div>
+          <div class="mm-rule">Regra: agendamento de revisão (SM-2, já implementado)</div>
+          <div class="mm-text">"Revise este conteúdo em 3 dias" — mesmo algoritmo que já calcula <code>dueDate</code> dos flashcards hoje, aplicado ao tópico como um todo.</div>
+        </div>
+      </div>
+
+      <h3>Entrada e saída do motor</h3>
+      <p><b>Entrada:</b> <code>Topic</code> (conteúdo, dificuldade, pré-requisitos, tempo médio) + <code>CurriculumTopicRef</code> (peso, período) + <code>Aluno</code> (notas, <code>MateriaTopicProgress</code>, histórico de foco, diagnóstico). <b>Saída:</b> lista ordenada de <code>MentorMessage { tipo, texto, ação sugerida }</code> — cada uma rastreável até a regra que a gerou.</p>
+
+      <h3>Onde a IA entra — e onde não precisa entrar ainda</h3>
+      <p>Este motor de regras é, na prática, o <code>LocalRulesProvider</code> já antecipado no roadmap técnico como implementação inicial do <code>AIProvider</code>. Quando uma IA real for integrada, ela pode reordenar, enriquecer ou parafrasear essas mensagens — mas o motor de regras continua existindo como caminho sempre disponível, determinístico e gratuito de rodar, mesmo offline.</p>
+    </section>
+
+    <section id="atualizacao">
+      <div class="sec-num">7</div>
+      <h2 class="serif">Estratégia de atualização</h2>
+      <ul>
+        <li><b>Corrigir um Tópico corrige em todo lugar.</b> Como currículos só referenciam tópicos por id, melhorar o resumo ou os exemplos de "Função do 2º Grau" propaga automaticamente para todo currículo que o referencia — sem retrabalho de curadoria multiplicado por currículo.</li>
+        <li><b>Identidade estável de Tópico.</b> Quando um tópico precisar ser dividido ou descontinuado, um campo <code>deprecatedBy: novoTopicId</code> evita quebrar referências antigas — tanto de <code>CurriculumTopicRef</code> quanto de flashcards já materializados no dispositivo do usuário que citam aquele tópico.</li>
+        <li><b>Vigência por documento, não por tópico.</b> A atualização anual acontece no nível do <code>CurriculumDocument</code> (ver relatório técnico anterior) — o grafo de conhecimento em si muda com frequência muito menor, já que conteúdo pedagógico básico ("o que é uma função") muda bem menos que a organização curricular de um ano específico.</li>
+        <li><b>Nunca migra dado do usuário.</b> Mesmo princípio já estabelecido: dado local (<code>MateriaTopicProgress</code>, flashcards materializados) nunca é alterado por uma atualização do bundle — só afeta o que for provisionado dali pra frente.</li>
+      </ul>
+    </section>
+
+    <section id="escala">
+      <div class="sec-num">8</div>
+      <h2 class="serif">Escalabilidade</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Eixo de crescimento</th><th>O que muda</th><th>O que NÃO precisa mudar</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="feat-name">Milhares de tópicos</td>
+              <td>Mais arquivos particionados por disciplina, carregados sob demanda</td>
+              <td>A estrutura <code>Discipline → Module → Topic</code> não muda de forma</td>
+            </tr>
+            <tr>
+              <td class="feat-name">Novo currículo (ex.: uma nova UF, uma nova instituição)</td>
+              <td>Um novo <code>CurriculumDocument</code> + suas <code>CurriculumTopicRef</code></td>
+              <td>Zero mudança no grafo de conhecimento existente — a maior parte referencia tópicos que já existem</td>
+            </tr>
+            <tr>
+              <td class="feat-name">Novo tipo de exame (ENEM, Vestibular, Concurso)</td>
+              <td>Um novo <code>escopo: 'exame'</code> na cadeia de resolução</td>
+              <td>Os tópicos de Matemática do Ensino Médio já servem de base — só a seleção/ordem muda</td>
+            </tr>
+            <tr>
+              <td class="feat-name">Novo país</td>
+              <td>Novo <code>CurriculumDocument.pais</code> + um conjunto de <code>Topic</code> <b>no idioma daquele país</b></td>
+              <td>A estrutura do grafo e da resolução — mas atenção: conteúdo é texto, então tradução não é automática (ver risco abaixo)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout risk">
+        <div class="callout-label">Limite honesto: desacoplar currículo não é o mesmo que traduzir conteúdo</div>
+        <p>A arquitetura acima resolve "não duplicar tópicos entre currículos do mesmo idioma" muito bem. Ela <b>não</b> resolve internacionalização de conteúdo sozinha — um <code>Topic</code> em português não vira inglês automaticamente. Expandir para outro idioma/país exige um conjunto paralelo de Tópicos traduzidos (ou um pipeline de tradução com revisão humana), não é "ligar uma flag". Vale registrar isso com clareza para não prometer mais do que a estrutura de dados garante sozinha.</p>
+      </div>
+    </section>
+
+    <section id="diferenciais">
+      <div class="sec-num">9</div>
+      <h2 class="serif">Diferenciais competitivos</h2>
+      <ul>
+        <li><b>Efeito de rede de conteúdo.</b> Quanto mais currículos forem adicionados, mais barato fica adicionar o próximo — porque a maior parte dos tópicos já existe no grafo. Nenhum concorrente do relatório de produto anterior (Forest, Anki, StudySmarter, Todoist/TickTick, Notion, Habitica, Google Agenda) tem esse tipo de ativo que cresce em valor com o tempo.</li>
+        <li><b>Mentor determinístico como vantagem de custo e confiabilidade, não só de produto.</b> Um motor de regras que funciona offline e não depende de chamadas de IA para cada interação é mais barato de operar em escala e mais previsível do que concorrentes que dependem de LLM para tudo — e ainda assim entrega o "professor particular" prometido.</li>
+        <li><b>Reutilização entre objetivos como jornada natural do usuário.</b> Um aluno que termina o Ensino Médio no Estudix e decide prestar um concurso não começa do zero — boa parte do grafo de conhecimento que ele já estudou continua relevante, só a camada de currículo muda. Isso é retenção estrutural, não uma feature de retenção "colada por cima".</li>
+        <li><b>Transparência do Mentor como confiança.</b> Cada orientação é rastreável até uma regra específica ("por que isso foi sugerido?") — ecoa a recomendação de transparência algorítmica já feita no relatório de produto, e se torna ainda mais forte com o Mentor tendo uma base de regras real por trás, não uma caixa-preta.</li>
+      </ul>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  Relatório de análise arquitetural — nenhuma alteração de código foi feita. Constrói sobre os relatórios de arquitetura, produto e currículo já publicados, e sobre a Feature 1 (Perfil Educacional) já implementada.
+</footer>

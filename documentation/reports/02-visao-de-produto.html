@@ -1,0 +1,434 @@
+<title>Estudix — Visão de Produto</title>
+<style>
+  :root{
+    --bg: #FBF6EC;
+    --bg-card: #FFFFFF;
+    --bg-raised: #F3ECDC;
+    --ink: #2B2B2B;
+    --ink-soft: #6E6558;
+    --primary: #1E3A5F;
+    --primary-ink: #0F2338;
+    --accent: #C97B4A;
+    --success: #4F6B45;
+    --danger: #A24E27;
+    --border: rgba(43,43,43,0.12);
+    --border-soft: rgba(43,43,43,0.07);
+    --code-bg: #F0E4CC;
+    --shadow: 0 2px 10px rgba(43,32,15,0.06);
+  }
+  :root[data-theme="dark"]{
+    --bg: #171310; --bg-card: #1F1B16; --bg-raised: #26211A;
+    --ink: #EFE7D8; --ink-soft: #A69C89;
+    --primary: #8FB0D6; --primary-ink: #DCE9F7; --accent: #E0995F;
+    --success: #8FBB7C; --danger: #E3947A;
+    --border: rgba(239,231,216,0.14); --border-soft: rgba(239,231,216,0.08);
+    --code-bg: #2C2A22; --shadow: 0 2px 14px rgba(0,0,0,0.35);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg: #171310; --bg-card: #1F1B16; --bg-raised: #26211A;
+      --ink: #EFE7D8; --ink-soft: #A69C89;
+      --primary: #8FB0D6; --primary-ink: #DCE9F7; --accent: #E0995F;
+      --success: #8FBB7C; --danger: #E3947A;
+      --border: rgba(239,231,216,0.14); --border-soft: rgba(239,231,216,0.08);
+      --code-bg: #2C2A22; --shadow: 0 2px 14px rgba(0,0,0,0.35);
+    }
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: var(--bg); color: var(--ink);
+    font-family: -apple-system, "Segoe UI", "Inter", ui-sans-serif, system-ui, sans-serif;
+    font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased;
+  }
+  ::selection{ background: var(--accent); color: #fff; }
+  .serif{ font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif; }
+  h1,h2,h3{ text-wrap: balance; }
+  a{ color: var(--primary); }
+
+  .masthead{
+    max-width: 940px; margin: 0 auto; padding: 64px 28px 40px;
+    border-bottom: 1px solid var(--border);
+  }
+  .eyebrow{
+    font-size: 12.5px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent); font-weight: 600; margin-bottom: 14px;
+  }
+  .masthead h1{
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    font-weight: 700; font-size: clamp(32px, 5vw, 46px); line-height: 1.12;
+    margin: 0 0 14px; color: var(--ink);
+  }
+  .masthead .question{
+    max-width: 66ch; color: var(--ink); font-size: 19px; margin: 0 0 22px;
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    font-style: italic; line-height: 1.5;
+  }
+  .meta-row{ display:flex; flex-wrap:wrap; gap:10px 22px; font-size:13px; color:var(--ink-soft); }
+  .meta-row span b{ color: var(--ink); font-weight: 600; }
+
+  .layout{
+    max-width: 1180px; margin: 0 auto; display: grid;
+    grid-template-columns: 240px minmax(0,1fr); gap: 48px;
+    padding: 40px 28px 100px; align-items: start;
+  }
+  nav.toc{ position: sticky; top: 32px; font-size: 13.5px; }
+  nav.toc .toc-label{
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink-soft); margin-bottom: 12px; font-weight: 600;
+  }
+  nav.toc ol{ list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--border); }
+  nav.toc a{
+    display: block; padding: 6px 0 6px 16px; margin-left: -1px;
+    border-left: 2px solid transparent; color: var(--ink-soft); text-decoration: none;
+  }
+  nav.toc a:hover{ color: var(--primary); border-left-color: var(--border); }
+
+  main{ min-width: 0; }
+  section{ padding-top: 8px; margin-bottom: 56px; scroll-margin-top: 24px; }
+  section + section{ border-top: 1px solid var(--border-soft); padding-top: 44px; }
+  .sec-num{
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    font-size: 14px; color: var(--accent); font-weight: 700; letter-spacing: 0.04em;
+  }
+  h2{
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    font-size: 27px; margin: 4px 0 6px; color: var(--ink);
+  }
+  .sec-intro{ color: var(--ink-soft); max-width: 68ch; margin: 0 0 26px; font-size: 15.5px; }
+  h3{ font-size: 16px; margin: 30px 0 12px; color: var(--ink); font-weight: 700; }
+  h4{ font-size: 13.5px; margin: 20px 0 8px; color: var(--ink); font-weight: 700; }
+  p{ max-width: 72ch; margin: 0 0 14px; }
+  ul, ol{ max-width: 72ch; padding-left: 22px; margin: 0 0 16px; }
+  li{ margin-bottom: 7px; }
+  code{
+    font-family: ui-monospace, SFMono-Regular, "Cascadia Code", Consolas, monospace;
+    font-size: 0.86em; background: var(--code-bg); padding: 1px 6px; border-radius: 5px; color: var(--ink);
+  }
+
+  blockquote.pull{
+    margin: 26px 0; padding: 6px 0 6px 22px;
+    border-left: 3px solid var(--accent);
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    font-style: italic; font-size: 22px; line-height: 1.4;
+    color: var(--ink); max-width: 60ch;
+  }
+  blockquote.pull cite{
+    display:block; margin-top:8px; font-style: normal; font-family: inherit;
+    font-size: 12.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft);
+  }
+
+  .callout{
+    background: var(--bg-card); border: 1px solid var(--border); border-left: 3px solid var(--accent);
+    border-radius: 10px; padding: 16px 18px; margin: 18px 0; box-shadow: var(--shadow); max-width: 72ch;
+  }
+  .callout.risk{ border-left-color: var(--danger); }
+  .callout.ok{ border-left-color: var(--success); }
+  .callout p:last-child{ margin-bottom: 0; }
+  .callout-label{ font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; margin-bottom: 6px; }
+  .callout .callout-label{ color: var(--accent); }
+  .callout.risk .callout-label{ color: var(--danger); }
+  .callout.ok .callout-label{ color: var(--success); }
+
+  .twocol{ display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 18px 0 8px; }
+  @media (max-width: 640px){ .twocol{ grid-template-columns: 1fr; } }
+  .panel{ background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; box-shadow: var(--shadow); }
+  .panel h4{ margin: 0 0 10px; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; display:flex; align-items:center; gap:8px; }
+  .panel.strong h4{ color: var(--success); }
+  .panel.weak h4{ color: var(--danger); }
+  .panel ul{ margin: 0; padding-left: 18px; max-width: none; }
+  .panel li{ font-size: 14px; margin-bottom: 8px; }
+
+  .table-wrap{
+    overflow-x: auto; border: 1px solid var(--border); border-radius: 12px;
+    margin: 16px 0 26px; box-shadow: var(--shadow);
+  }
+  table{ border-collapse: collapse; width: 100%; min-width: 760px; background: var(--bg-card); font-size: 13.5px; }
+  thead th{
+    text-align: left; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-soft); background: var(--bg-raised); padding: 12px 16px;
+    border-bottom: 1px solid var(--border); white-space: nowrap;
+  }
+  tbody td{ padding: 13px 16px; border-bottom: 1px solid var(--border-soft); vertical-align: top; }
+  tbody tr:last-child td{ border-bottom: none; }
+  td ul{ margin: 0; padding-left: 16px; max-width: none; }
+  td li{ margin-bottom: 4px; }
+  .feat-name{ font-weight: 700; }
+
+  .pill{
+    display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: 0.02em;
+    padding: 3px 9px; border-radius: 999px; white-space: nowrap;
+  }
+  .pill.essencial{ background: var(--primary); color: #fff; }
+  .pill.muito{ background: var(--accent); color: #fff; }
+  .pill.importante{ background: var(--bg-raised); color: var(--ink); border: 1px solid var(--border); }
+  .pill.futuro{ background: transparent; color: var(--ink-soft); border: 1px solid var(--border); }
+  .pill.nao{ background: var(--danger); color: #fff; }
+
+  .legend{ display:flex; flex-wrap:wrap; gap: 10px 18px; margin: 14px 0 22px; font-size: 12.5px; color: var(--ink-soft); align-items:center; }
+  .legend span{ display:flex; align-items:center; gap:6px; }
+
+  .quadrant{ font-size: 13px; }
+
+  footer{ max-width: 940px; margin: 0 auto; padding: 0 28px 80px; color: var(--ink-soft); font-size: 13px; }
+</style>
+
+<header class="masthead">
+  <div class="eyebrow">Visão de Produto · Não implementar</div>
+  <h1 class="serif">O que falta para o Estudix se tornar referência</h1>
+  <p class="question">"Esse aplicativo entende como eu estudo." — é essa frase, e não uma lista de features, que separa um organizador de um produto memorável.</p>
+  <div class="meta-row">
+    <span>Preparado para: <b>arturgost128@gmail.com</b></span>
+    <span>Data: <b>14 de julho de 2026</b></span>
+    <span>Escopo: <b>estratégia de produto — nenhum código alterado</b></span>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="toc">
+    <div class="toc-label">Neste relatório</div>
+    <ol>
+      <li><a href="#diagnostico">1 · Diagnóstico do produto</a></li>
+      <li><a href="#concorrentes">2 · Comparação estratégica</a></li>
+      <li><a href="#diferenciacao">3 · Oportunidades de diferenciação</a></li>
+      <li><a href="#recomendadas">4 · Funcionalidades recomendadas</a></li>
+      <li><a href="#naoinvestir">5 · O que não vale o investimento</a></li>
+      <li><a href="#experiencia">6 · A melhor experiência possível</a></li>
+      <li><a href="#roadmap">7 · Roadmap estratégico</a></li>
+      <li><a href="#visao">8 · Visão de longo prazo</a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+    <section id="diagnostico">
+      <div class="sec-num">1</div>
+      <h2 class="serif">Diagnóstico do produto atual</h2>
+      <p class="sec-intro">O Estudix já não é um app vazio. A pergunta certa não é "o que construir do zero", é "o que fazer os módulos que já existem conversarem entre si".</p>
+
+      <h3>O que já existe e é raro</h3>
+      <p>O app tem, hoje, peças que a maioria dos concorrentes não tem juntas: repetição espaçada de verdade nos flashcards (SM-2 simplificado, não um brinquedo de "marcar como lido"), Pomodoro vinculado a uma matéria específica, sequência de dias estudados (<code>currentStreak</code>) e conquistas, notas com média calculada por disciplina, calendário com lembretes locais. Isso é infraestrutura de dado que a maior parte dos apps de estudo genéricos simplesmente não coleta.</p>
+
+      <h3>Onde ele ainda é "só um organizador"</h3>
+      <p>O problema não é falta de funcionalidade — é que essas peças não se falam. Uma nota baixa em Matemática hoje não influencia nada em Física. Um flashcard vencido só aparece se o usuário entrar manualmente naquela matéria. O Pomodoro registra minutos, mas nada volta desses minutos para dizer se ajudaram. Cada módulo é uma ilha correta, mas nenhum é um tutor — porque tutor é, por definição, quem conecta pontos que o aluno não conectaria sozinho.</p>
+
+      <h3>Atrito na jornada atual</h3>
+      <div class="twocol">
+        <div class="panel weak">
+          <h4>Pontos de atrito observados</h4>
+          <ul>
+            <li>Onboarding capta só nome e uma matéria — não há calibração alguma antes do uso.</li>
+            <li>Matéria recém-criada abre em tela vazia ("Nenhum checklist para esta matéria") — sensação de trabalho, não de ajuda, logo no primeiro contato.</li>
+            <li>Nada na Home diz "faça isto agora" — o usuário decide sozinho o que estudar toda vez que abre o app.</li>
+            <li>Revisões pendentes (flashcards vencidos) só aparecem dentro de cada matéria, não são proativas.</li>
+            <li>O streak de foco é binário: quebra no primeiro dia perdido, sem chance de recuperação.</li>
+            <li>Não existe o conceito de "meta" — o usuário vê números (minutos, sessões) mas não sabe se está no caminho certo para nada.</li>
+          </ul>
+        </div>
+        <div class="panel strong">
+          <h4>Já mapeado no roadmap técnico anterior</h4>
+          <ul>
+            <li>Perfil educacional completo no onboarding (calibra nível, objetivo, tempo, dificuldades, método).</li>
+            <li>Cadastro inteligente com cold-start pelo catálogo (resolve a tela vazia).</li>
+            <li>Dashboard com <code>insightsEngine</code> (revisões e matéria crítica saem da sombra).</li>
+            <li>Plano de estudos automático (dá ao usuário um "faça isto agora" real).</li>
+          </ul>
+        </div>
+      </div>
+      <p>Este relatório não repete essas entregas técnicas — assume que vão acontecer e foca no que falta <i>além</i> delas para o produto virar referência de mercado.</p>
+    </section>
+
+    <section id="concorrentes">
+      <div class="sec-num">2</div>
+      <h2 class="serif">Comparação estratégica</h2>
+      <p class="sec-intro">Nenhum concorrente entrega as quatro camadas juntas: semântica de currículo, revisão espaçada agradável, foco cronometrado ligado a conteúdo e geração de plano. Cada um resolve uma fatia — e vive das fraquezas da fatia que não resolve.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Concorrente</th><th>O que resolve bem</th><th>Limitação real</th><th>Onde o Estudix pode diferenciar</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="feat-name">Forest</td>
+              <td>Gamifica o ato de não mexer no celular</td>
+              <td>Não sabe o que você estuda; a árvore morre se você sai do app — pune, não ensina</td>
+              <td>Foco já vinculado a uma matéria real, com dado que volta para o desempenho</td>
+            </tr>
+            <tr>
+              <td class="feat-name">Anki</td>
+              <td>O melhor algoritmo de repetição espaçada do mercado</td>
+              <td>Interface hostil, zero motivação, zero noção de "matéria" ou cronograma</td>
+              <td>SM-2 já existe no Estudix dentro de uma experiência acolhedora e conectada ao resto do estudo</td>
+            </tr>
+            <tr>
+              <td class="feat-name">StudySmarter</td>
+              <td>Conteúdo robusto, IA de resumo</td>
+              <td>Pensado para universidades europeias; onboarding pesado; assinatura cara</td>
+              <td>Foco no aluno brasileiro (ENEM, vestibular, concursos) que nenhum concorrente internacional prioriza</td>
+            </tr>
+            <tr>
+              <td class="feat-name">Todoist / TickTick / MS To Do</td>
+              <td>Gestão de tarefas confiável</td>
+              <td>"Estudar Matemática" é uma tarefa igual a "comprar leite" — zero semântica de aprendizado</td>
+              <td>O catálogo de disciplinas dá significado ao que está sendo agendado</td>
+            </tr>
+            <tr>
+              <td class="feat-name">Notion</td>
+              <td>Flexibilidade infinita</td>
+              <td>Exige que o aluno construa o próprio sistema do zero — alta energia de ativação</td>
+              <td>Inteligência pronta desde o primeiro uso, sem exigir configuração</td>
+            </tr>
+            <tr>
+              <td class="feat-name">Habitica</td>
+              <td>Gamificação divertida (RPG)</td>
+              <td>XP e nível descolados do aprendizado real — "grind" que não mede domínio de conteúdo</td>
+              <td>Progressão amarrada a maestria real (nota, retenção de flashcard), não a cliques</td>
+            </tr>
+            <tr>
+              <td class="feat-name">Google Agenda</td>
+              <td>Calendário universal e confiável</td>
+              <td>Nenhuma noção de dificuldade, pré-requisito ou revisão</td>
+              <td>Cronograma que se adapta ao desempenho, não só ao tempo</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="diferenciacao">
+      <div class="sec-num">3</div>
+      <h2 class="serif">Oportunidades de diferenciação</h2>
+      <p class="sec-intro">O diferencial real não é uma feature isolada — é a camada de conexão entre dados que já existem.</p>
+
+      <h3>A camada de entendimento</h3>
+      <p>Nota, flashcard, sessão de foco e evento de calendário já são coletados hoje, cada um na sua ilha. O diferencial nasce quando esses quatro fios se cruzam por matéria: "você errou 4 de 5 flashcards de Termoquímica esta semana e sua última prova de Química caiu — isso normalmente indica que vale revisar Estequiometria primeiro" é uma frase que só existe se o sistema já sabe ligar nota, flashcard e pré-requisito. Nenhuma feature nova é necessária para isso — é orquestração do que já foi arquitetado nos relatórios anteriores (catálogo + recomendações + insights).</p>
+
+      <blockquote class="pull">
+        "Esse app entende como eu estudo" nasce no momento em que uma recomendação é específica demais para ter sido escrita por um redator genérico — só pôde ter vindo dos seus próprios dados.
+        <cite>Momento de diferenciação real</cite>
+      </blockquote>
+
+      <h3>Relevância curricular brasileira</h3>
+      <p>Nenhum dos concorrentes internacionais é desenhado em torno de ENEM, vestibular ou concurso público como objetivos de primeira classe. Isso é vantagem de localização real, não cosmética — muda o que o catálogo prioriza e como o plano de estudos calcula prazo.</p>
+
+      <h3>Tom calmo como posicionamento</h3>
+      <p>A identidade visual do Estudix (papel quente, tipografia serifada, ausência de neon) já é, sem querer, um posicionamento contra dois extremos do mercado: o "gamer" barulhento (Habitica) e o corporativo frio (Notion, Todoist). Um app de estudo que parece um caderno bem cuidado, não um cassino de pontos, é raro — vale proteger essa escolha deliberadamente ao evoluir o produto.</p>
+
+      <h3>Transparência algorítmica</h3>
+      <p>Explicar o "porquê" de cada recomendação ("sugerimos revisar Álgebra porque sua média em Física caiu depois de Cinemática") constrói confiança que nenhum concorrente entrega — e se torna ainda mais importante quando a camada de IA (já prevista na arquitetura) entrar em cena, evitando a sensação de "caixa-preta" que afasta usuários de recomendações automáticas.</p>
+    </section>
+
+    <section id="recomendadas">
+      <div class="sec-num">4</div>
+      <h2 class="serif">Funcionalidades recomendadas</h2>
+      <p class="sec-intro">Priorização por impacto para o usuário, complexidade de implementação e valor estratégico — construída sobre a arquitetura e o roadmap já definidos, não em paralelo a eles.</p>
+
+      <div class="legend">
+        <span><span class="pill essencial">Essencial</span> ativação e confiança básica</span>
+        <span><span class="pill muito">Muito importante</span> retenção e diferenciação</span>
+        <span><span class="pill importante">Importante</span> reforça o núcleo</span>
+        <span><span class="pill futuro">Futuro</span> exige mais maturidade/infra</span>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Funcionalidade</th><th>Pilar</th><th>Impacto</th><th>Complexidade</th><th>Prioridade</th></tr></thead>
+          <tbody>
+            <tr><td class="feat-name">"Próxima ação" explícita na Home</td><td>UX</td><td>Altíssimo — remove a decisão diária do usuário</td><td>Baixa</td><td><span class="pill essencial">Essencial</span></td></tr>
+            <tr><td class="feat-name">Cold-start com template do catálogo ao criar matéria</td><td>UX</td><td>Alto — elimina a tela vazia no primeiro contato</td><td>Baixa</td><td><span class="pill essencial">Essencial</span></td></tr>
+            <tr><td class="feat-name">Streak com "escudo" (perdão de 1 dia/semana)</td><td>Retenção</td><td>Alto — evita abandono após a primeira quebra de sequência</td><td>Baixa</td><td><span class="pill muito">Muito importante</span></td></tr>
+            <tr><td class="feat-name">Revisões pendentes proativas fora da matéria</td><td>Retenção</td><td>Alto — motivo real e não manipulativo para reabrir o app</td><td>Baixa</td><td><span class="pill muito">Muito importante</span></td></tr>
+            <tr><td class="feat-name">Explicação do "porquê" em cada recomendação</td><td>Confiança / IA</td><td>Alto — constrói confiança no que hoje seria uma caixa-preta</td><td>Baixa (sobre F4/F9 já arquitetadas)</td><td><span class="pill muito">Muito importante</span></td></tr>
+            <tr><td class="feat-name">Resumo semanal (dias estudados, evolução de média, revisões feitas)</td><td>Inteligência educacional</td><td>Médio-alto — reflexão em vez de números soltos</td><td>Média</td><td><span class="pill muito">Muito importante</span></td></tr>
+            <tr><td class="feat-name">Meta ligada ao objetivo (contagem regressiva para ENEM/prova)</td><td>Personalização</td><td>Alto — dá sentido aos números do dashboard</td><td>Média</td><td><span class="pill muito">Muito importante</span></td></tr>
+            <tr><td class="feat-name">Ajuste de dificuldade percebida por desempenho real</td><td>Inteligência educacional</td><td>Médio — plano fica mais preciso com o tempo</td><td>Média</td><td><span class="pill importante">Importante</span></td></tr>
+            <tr><td class="feat-name">Replanejamento automático após dia perdido</td><td>Personalização</td><td>Médio — evita que o cronograma "quebre" e seja abandonado</td><td>Média</td><td><span class="pill importante">Importante</span></td></tr>
+            <tr><td class="feat-name">Importador de baralhos Anki (.apkg) e tarefas de outros apps</td><td>Aquisição</td><td>Médio-alto — reduz o custo de trocar de app</td><td>Média</td><td><span class="pill importante">Importante</span></td></tr>
+            <tr><td class="feat-name">Auditoria e correção de acessibilidade (contraste, labels, fontscaling)</td><td>Acessibilidade</td><td>Médio, mas amplia o mercado endereçável</td><td>Baixa-média</td><td><span class="pill importante">Importante</span></td></tr>
+            <tr><td class="feat-name">Sincronização em nuvem multi-dispositivo</td><td>Retenção / Monetização</td><td>Alto para usuários com mais de um aparelho</td><td>Alta — exige backend, hoje inexistente</td><td><span class="pill futuro">Futuro</span></td></tr>
+            <tr><td class="feat-name">IA conversacional tipo tutor (chat de dúvidas)</td><td>Inteligência educacional</td><td>Alto, mas caro e arriscado sem base sólida</td><td>Alta — depende de F9 e de custo de API</td><td><span class="pill futuro">Futuro</span></td></tr>
+            <tr><td class="feat-name">Modo institucional (escolas/cursinhos, turmas, relatórios de professor)</td><td>Escalabilidade / B2B</td><td>Alto valor estratégico, público totalmente novo</td><td>Muito alta — exige arquitetura multi-tenant nova</td><td><span class="pill futuro">Futuro</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="naoinvestir">
+      <div class="sec-num">5</div>
+      <h2 class="serif">O que não vale o investimento</h2>
+      <p class="sec-intro">Ideias comuns em apps de produtividade/estudo que, aplicadas aqui, gastariam esforço de engenharia para diluir exatamente o que torna o Estudix diferente.</p>
+      <ul>
+        <li><b>Gamificação tipo RPG completo</b> (XP numérico, níveis, avatar, loja virtual) — desloca a motivação de "aprender" para "acumular", o oposto do posicionamento de maestria real que diferencia o app do Habitica.</li>
+        <li><b>Leaderboards competitivos públicos</b> — comparação social pode gerar ansiedade, especialmente relevante para o público concurseiro adulto; se algum dia fizer sentido, só como recurso opt-in entre amigos, nunca como ranking global padrão.</li>
+        <li><b>Anúncios como modelo de receita</b> — contradiz a própria identidade visual do produto (um "espaço de estudo calmo"); o custo de marca é maior que a receita marginal.</li>
+        <li><b>Moedas, loot boxes ou recompensas aleatórias</b> — a literatura de motivação (efeito de supervalorização/<i>overjustification</i>) mostra que recompensas extrínsecas artificiais corroem motivação intrínseca no longo prazo, justamente o que o app deveria estar construindo.</li>
+        <li><b>Rede social pública (feed, curtidas, comentários)</b> — foge do núcleo de estudo individual focado e exige moderação de conteúdo com custo alto e nenhuma relação direta com a proposta de valor.</li>
+      </ul>
+    </section>
+
+    <section id="experiencia">
+      <div class="sec-num">6</div>
+      <h2 class="serif">A melhor experiência possível</h2>
+      <p class="sec-intro">A experiência ideal é aquela em que o usuário nunca precisa decidir sozinho o que fazer — e nunca é excluído por causa de como lê, vê ou presta atenção.</p>
+
+      <h3>Dashboard: menos é mais</h3>
+      <p>O que deve aparecer todos os dias, em ordem de prioridade: <b>uma</b> próxima ação clara, contagem de revisões pendentes, no máximo uma matéria crítica, progresso do plano do dia, e o streak de forma discreta — nunca dominante. O que deve sair do primeiro plano: histórico extenso, gráficos detalhados de todas as matérias (mover para uma tela dedicada) e conquistas ainda distantes de serem desbloqueadas. Os indicadores de maior impacto real são tendências (nota subindo ou caindo), não valores isolados — e aderência ao plano em porcentagem, não em minutos brutos.</p>
+
+      <h3>Acessibilidade como parte do produto, não um extra</h3>
+      <ul>
+        <li><b>Dislexia:</b> opção de espaçamento maior entre letras/linhas nas anotações; evitar blocos de texto longos sem estrutura.</li>
+        <li><b>TDAH:</b> durações de foco mais curtas como opção padrão sugerida (10–15 min), não só os 25 min fixos de hoje; um "modo foco" que esconde métricas irrelevantes durante a sessão.</li>
+        <li><b>Baixa visão / contraste:</b> auditar o contraste atual de textos secundários (ex.: cinza sobre o bege de fundo) contra o padrão WCAG AA; oferecer modo de alto contraste.</li>
+        <li><b>Daltonismo:</b> nunca comunicar estado só por cor — o badge de média já combina cor com texto; padronizar isso também em barras de progresso e indicadores novos.</li>
+        <li><b>Leitores de tela:</b> auditoria de <code>accessibilityLabel</code>/<code>accessibilityRole</code> em todos os botões de ação, hoje presente só em alguns pontos.</li>
+        <li><b>Tamanho de fonte:</b> respeitar a configuração de escala de fonte do sistema operacional em vez de travar tamanhos fixos.</li>
+        <li><b>Navegação simplificada:</b> um modo "essencial" com menos abas/opções visíveis para quem se sente sobrecarregado por muitas escolhas.</li>
+      </ul>
+
+      <h3>A jornada completa, sem decisões forçadas</h3>
+      <p>Primeiro acesso e onboarding calibram o essencial em poucos toques (não um formulário longo). O uso diário abre direto numa próxima ação, não num painel de números para interpretar. Revisões e matéria crítica se anunciam sozinhas. Concluir uma meta gera reconhecimento proporcional (nunca inflado) e uma sugestão natural do que vem a seguir. Voltar no dia seguinte é recompensado por progresso real visível — média subindo, plano cumprido — não por um número de XP artificial.</p>
+    </section>
+
+    <section id="roadmap">
+      <div class="sec-num">7</div>
+      <h2 class="serif">Roadmap estratégico</h2>
+      <p class="sec-intro">Uma lente de produto e negócio sobre as cinco fases técnicas já definidas — quando ativar, quando reter, quando monetizar.</p>
+
+      <h3>Curto prazo — ativação, sem cobrar nada</h3>
+      <p>Alinhado às Fases 1–2 técnicas (perfil, catálogo, cadastro inteligente, dashboard v1): entregar "próxima ação" explícita, cold-start com template e streak com escudo. Nenhuma cobrança nesta etapa — o objetivo é provar que o app é útil antes de pedir qualquer coisa em troca.</p>
+
+      <h3>Médio prazo — retenção e o primeiro Premium</h3>
+      <p>Alinhado às Fases 3–4 técnicas (recomendações, Pomodoro expandido, plano de estudos automático): aqui nasce a primeira camada paga sustentável — catálogo completo, plano automático avançado e sincronização multi-dispositivo como <b>Premium</b>, mantendo matérias, notas, flashcards, checklist e Pomodoro básico sempre gratuitos. Cobrar pela inteligência agregada, nunca pela ferramenta central de estudar — é o erro histórico que a comunidade de usuários do Anki no mobile puniu com ressentimento duradouro.</p>
+
+      <h3>Longo prazo — IA como consumo e a decisão B2B</h3>
+      <p>Alinhado à Fase 5 técnica (interface de IA): IA conversacional como consumo adicional sobre o Premium, não incluída no básico — controla custo de API diretamente ligado a quem usa. A entrada em modelo institucional (escolas, cursinhos, empresas) deve ser tratada como uma <b>decisão de negócio consciente</b>, não uma extensão natural do roadmap: exige arquitetura multi-tenant que não existe hoje.</p>
+
+      <h3>Modelos de monetização sustentáveis</h3>
+      <ul>
+        <li><b>Freemium honesto</b> — ferramentas centrais de estudo sempre gratuitas; cobrar por inteligência agregada (catálogo completo, plano automático, IA, sync).</li>
+        <li><b>Assinatura sazonal</b> — planos de curta duração com desconto na proximidade do ENEM/vestibulares, respeitando a sazonalidade real do público.</li>
+        <li><b>Planos institucionais</b> — licenciamento em volume para escolas/cursinhos, condicionado à evolução arquitetural multi-tenant.</li>
+      </ul>
+    </section>
+
+    <section id="visao">
+      <div class="sec-num">8</div>
+      <h2 class="serif">Visão de longo prazo</h2>
+      <p class="sec-intro">De organizador, para tutor pessoal, para potencialmente uma plataforma — em estágios deliberados, não por acúmulo de features.</p>
+
+      <p>O ativo de longo prazo do Estudix não é a lista de telas — é o <b>grafo de conhecimento</b>: o catálogo de disciplinas, suas relações de pré-requisito e, com o tempo, dados agregados (e anonimizáveis) de como o conteúdo é realmente estudado. É esse grafo, não um chatbot genérico com um prompt de "você é um tutor", que eventualmente alimenta uma camada de IA verdadeiramente diferenciada — uma que já sabe, antes de perguntar, que Física depende de Álgebra.</p>
+
+      <p>A expansão para ENEM, vestibulares, concursos, faculdade, idiomas e certificações é suportada pela arquitetura já desenhada — o catálogo foi propositalmente desacoplado dos dados do usuário exatamente para crescer sem refatoração. A entrada em escolas e empresas, porém, é uma fronteira arquitetural real, não incremental: exige contas multiusuário, turmas e relatórios agregados que o modelo atual (100% local, um usuário por instalação) não suporta. Tratar essa fronteira como decisão consciente — permanecer um produto B2C premium excelente, ou investir deliberadamente em uma fundação B2B — é mais saudável para o produto do que assumir por padrão que "vai dar para crescer para lá depois".</p>
+
+      <div class="callout ok">
+        <div class="callout-label">O critério de sucesso</div>
+        <p>Se, um ano após o lançamento, um usuário recomendar o Estudix dizendo "ele sabe o que eu preciso estudar antes de eu pensar nisso" — o produto atingiu o que nenhum concorrente da lista entrega hoje. Esse é o norte de cada decisão deste roadmap.</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  Relatório de visão de produto — nenhuma alteração de código foi feita. Constrói sobre o diagnóstico arquitetural e o roadmap técnico já definidos nas análises anteriores.
+</footer>

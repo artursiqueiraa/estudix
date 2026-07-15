@@ -1,0 +1,898 @@
+<title>Estudix — Análise Arquitetural</title>
+<style>
+  :root{
+    --bg: #FBF6EC;
+    --bg-card: #FFFFFF;
+    --bg-raised: #F3ECDC;
+    --ink: #2B2B2B;
+    --ink-soft: #6E6558;
+    --primary: #1E3A5F;
+    --primary-ink: #0F2338;
+    --accent: #C97B4A;
+    --success: #4F6B45;
+    --danger: #A24E27;
+    --border: rgba(43,43,43,0.12);
+    --border-soft: rgba(43,43,43,0.07);
+    --code-bg: #F0E4CC;
+    --shadow: 0 2px 10px rgba(43,32,15,0.06);
+  }
+  :root[data-theme="dark"]{
+    --bg: #171310;
+    --bg-card: #1F1B16;
+    --bg-raised: #26211A;
+    --ink: #EFE7D8;
+    --ink-soft: #A69C89;
+    --primary: #8FB0D6;
+    --primary-ink: #DCE9F7;
+    --accent: #E0995F;
+    --success: #8FBB7C;
+    --danger: #E3947A;
+    --border: rgba(239,231,216,0.14);
+    --border-soft: rgba(239,231,216,0.08);
+    --code-bg: #2C2A22;
+    --shadow: 0 2px 14px rgba(0,0,0,0.35);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg: #171310;
+      --bg-card: #1F1B16;
+      --bg-raised: #26211A;
+      --ink: #EFE7D8;
+      --ink-soft: #A69C89;
+      --primary: #8FB0D6;
+      --primary-ink: #DCE9F7;
+      --accent: #E0995F;
+      --success: #8FBB7C;
+      --danger: #E3947A;
+      --border: rgba(239,231,216,0.14);
+      --border-soft: rgba(239,231,216,0.08);
+      --code-bg: #2C2A22;
+      --shadow: 0 2px 14px rgba(0,0,0,0.35);
+    }
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, "Segoe UI", "Inter", ui-sans-serif, system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection{ background: var(--accent); color: #fff; }
+
+  .serif{
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
+  }
+  h1,h2,h3{ text-wrap: balance; }
+
+  a{ color: var(--primary); }
+
+  /* ── Cabeçalho do relatório ─────────────────────────── */
+  .masthead{
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 64px 28px 40px;
+    border-bottom: 1px solid var(--border);
+  }
+  .eyebrow{
+    font-size: 12.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+  .masthead h1{
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    font-weight: 700;
+    font-size: clamp(32px, 5vw, 46px);
+    line-height: 1.12;
+    margin: 0 0 14px;
+    color: var(--ink);
+  }
+  .masthead p{
+    max-width: 62ch;
+    color: var(--ink-soft);
+    font-size: 17px;
+    margin: 0 0 22px;
+  }
+  .meta-row{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 22px;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .meta-row span b{ color: var(--ink); font-weight: 600; }
+
+  /* ── Layout de leitura + índice fixo ────────────────── */
+  .layout{
+    max-width: 1180px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 240px minmax(0,1fr);
+    gap: 48px;
+    padding: 40px 28px 100px;
+    align-items: start;
+  }
+  nav.toc{
+    position: sticky;
+    top: 32px;
+    font-size: 13.5px;
+  }
+  nav.toc .toc-label{
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+  nav.toc ol{
+    list-style: none;
+    margin: 0; padding: 0;
+    border-left: 1px solid var(--border);
+  }
+  nav.toc li{ margin: 0; }
+  nav.toc a{
+    display: block;
+    padding: 6px 0 6px 16px;
+    margin-left: -1px;
+    border-left: 2px solid transparent;
+    color: var(--ink-soft);
+    text-decoration: none;
+  }
+  nav.toc a:hover{ color: var(--primary); border-left-color: var(--border); }
+
+  main{ min-width: 0; }
+  section{
+    padding-top: 8px;
+    margin-bottom: 56px;
+    scroll-margin-top: 24px;
+  }
+  section + section{
+    border-top: 1px solid var(--border-soft);
+    padding-top: 44px;
+  }
+  .sec-num{
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    font-size: 14px;
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+  h2{
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    font-size: 27px;
+    margin: 4px 0 6px;
+    color: var(--ink);
+  }
+  .sec-intro{
+    color: var(--ink-soft);
+    max-width: 68ch;
+    margin: 0 0 26px;
+    font-size: 15.5px;
+  }
+  h3{
+    font-size: 16px;
+    margin: 30px 0 12px;
+    color: var(--ink);
+    font-weight: 700;
+  }
+  p{ max-width: 72ch; margin: 0 0 14px; }
+  ul, ol{ max-width: 72ch; padding-left: 22px; margin: 0 0 16px; }
+  li{ margin-bottom: 7px; }
+
+  code, .file{
+    font-family: ui-monospace, SFMono-Regular, "Cascadia Code", Consolas, monospace;
+    font-size: 0.86em;
+    background: var(--code-bg);
+    padding: 1px 6px;
+    border-radius: 5px;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  .tree{
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 16px 20px;
+    margin: 18px 0 26px;
+    overflow-x: auto;
+  }
+  .tree pre{
+    margin: 0;
+    font-family: ui-monospace, SFMono-Regular, "Cascadia Code", Consolas, monospace;
+    font-size: 12.5px;
+    line-height: 1.75;
+    color: var(--ink-soft);
+    white-space: pre;
+  }
+  .tree pre b{ color: var(--ink); font-weight: 600; }
+
+  .callout{
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin: 18px 0;
+    box-shadow: var(--shadow);
+    max-width: 72ch;
+  }
+  .callout.risk{ border-left-color: var(--danger); }
+  .callout.ok{ border-left-color: var(--success); }
+  .callout p:last-child{ margin-bottom: 0; }
+  .callout-label{
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .callout .callout-label{ color: var(--accent); }
+  .callout.risk .callout-label{ color: var(--danger); }
+  .callout.ok .callout-label{ color: var(--success); }
+
+  /* ── grid de pontos fortes/fracos ─────────────────────── */
+  .twocol{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin: 18px 0 8px;
+  }
+  @media (max-width: 640px){ .twocol{ grid-template-columns: 1fr; } }
+  .panel{
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    box-shadow: var(--shadow);
+  }
+  .panel h4{
+    margin: 0 0 10px;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .panel.strong h4{ color: var(--success); }
+  .panel.weak h4{ color: var(--danger); }
+  .panel ul{ margin: 0; padding-left: 18px; max-width: none; }
+  .panel li{ font-size: 14px; margin-bottom: 8px; }
+
+  /* ── tabelas ─────────────────────────────────────────── */
+  .table-wrap{
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin: 16px 0 26px;
+    box-shadow: var(--shadow);
+  }
+  table{
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 760px;
+    background: var(--bg-card);
+    font-size: 13.5px;
+  }
+  thead th{
+    text-align: left;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    background: var(--bg-raised);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  tbody td{
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--border-soft);
+    vertical-align: top;
+  }
+  tbody tr:last-child td{ border-bottom: none; }
+  td ul{ margin: 0; padding-left: 16px; max-width: none; }
+  td li{ margin-bottom: 4px; }
+  .feat-name{ font-weight: 700; white-space: nowrap; }
+  .pill{
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    padding: 3px 9px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .pill.alta{ background: var(--danger); color: #fff; }
+  .pill.media{ background: var(--accent); color: #fff; }
+  .pill.baixa{ background: var(--border); color: var(--ink-soft); }
+  .pill.novo{ background: var(--primary); color: #fff; }
+
+  /* ── modelo de dados: cards de entidade ──────────────── */
+  .entity{
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+  }
+  .entity-head{
+    display:flex; align-items:baseline; gap: 10px; flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+  .entity-name{ font-family: ui-monospace, SFMono-Regular, monospace; font-weight: 700; font-size: 15px; color: var(--primary); }
+  .entity-tag{
+    font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-soft); border: 1px solid var(--border); border-radius: 999px;
+    padding: 2px 9px;
+  }
+  .entity-fields{ font-size: 13.5px; color: var(--ink-soft); margin: 0; }
+  .entity-fields b{ color: var(--ink); font-weight: 600; }
+
+  /* ── estrutura de serviços ─────────────────────────────── */
+  .service-grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 18px 0 22px;
+  }
+  @media (max-width: 720px){ .service-grid{ grid-template-columns: 1fr; } }
+  .service-card{
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    box-shadow: var(--shadow);
+  }
+  .service-card .svc-name{
+    font-family: ui-monospace, SFMono-Regular, monospace;
+    font-weight: 700; font-size: 14px; color: var(--primary);
+    display: block; margin-bottom: 6px;
+  }
+  .service-card p{ font-size: 13.5px; color: var(--ink-soft); margin: 0 0 8px; max-width: none; }
+  .svc-io{ font-size: 12px; color: var(--ink-soft); }
+  .svc-io b{ color: var(--ink); font-weight: 600; }
+  .svc-io div{ margin-bottom: 3px; }
+
+  /* ── fluxo do usuário: trilho vertical ──────────────── */
+  .flow{
+    list-style: none;
+    margin: 20px 0; padding: 0;
+    position: relative;
+  }
+  .flow li{
+    position: relative;
+    padding: 2px 0 26px 34px;
+    max-width: 68ch;
+  }
+  .flow li::before{
+    content: "";
+    position: absolute; left: 6px; top: 4px; bottom: -4px;
+    width: 1px; background: var(--border);
+  }
+  .flow li:last-child::before{ display:none; }
+  .flow li::after{
+    content: "";
+    position: absolute; left: 0; top: 4px;
+    width: 13px; height: 13px; border-radius: 50%;
+    background: var(--bg-card); border: 2px solid var(--accent);
+  }
+  .flow .step-title{ font-weight: 700; margin-bottom: 3px; }
+  .flow .step-body{ color: var(--ink-soft); font-size: 14.5px; }
+
+  /* ── roadmap ─────────────────────────────────────────── */
+  .roadmap{ display: flex; flex-direction: column; gap: 14px; margin: 20px 0; }
+  .phase{
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 18px 20px;
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 18px;
+  }
+  @media (max-width: 640px){ .phase{ grid-template-columns: 1fr; } }
+  .phase-tag{
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    font-size: 19px; font-weight: 700; color: var(--primary);
+  }
+  .phase-sub{ font-size: 11.5px; color: var(--ink-soft); margin-top: 4px; letter-spacing: 0.03em; }
+  .phase ul{ margin: 4px 0 0; padding-left: 18px; max-width: none; }
+  .phase li{ font-size: 14px; margin-bottom: 6px; }
+  .phase-badges{ display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .phase-note{ margin-top:10px;font-size:13.5px;color:var(--ink-soft); }
+
+  /* ── riscos técnicos ───────────────────────────────────── */
+  .risk-grid{ display: flex; flex-direction: column; gap: 12px; margin: 18px 0; }
+  .risk-card{
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 15px 18px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px 16px;
+    align-items: start;
+  }
+  .risk-card .risk-title{ font-weight: 700; font-size: 14.5px; margin-bottom: 4px; }
+  .risk-card .risk-body{ font-size: 13.5px; color: var(--ink-soft); grid-column: 1 / -1; }
+  .risk-card .risk-mitig{ font-size: 13px; color: var(--ink); grid-column: 1 / -1; margin-top: 2px; }
+  .risk-card .risk-mitig b{ color: var(--success); }
+
+  footer{
+    max-width: 920px; margin: 0 auto; padding: 0 28px 80px;
+    color: var(--ink-soft); font-size: 13px;
+  }
+</style>
+
+<header class="masthead">
+  <div class="eyebrow">Análise Arquitetural · Não implementar</div>
+  <h1 class="serif">Estudix como plataforma de estudos inteligente</h1>
+  <p>Diagnóstico da arquitetura atual, impacto por funcionalidade, modelo de dados, estrutura de serviços, fluxo de uso, UX/UI, roadmap em fases, riscos técnicos e recomendações — para evoluir o Estudix de um cadastro de matérias para um sistema que orienta o aluno.</p>
+  <div class="meta-row">
+    <span>Preparado para: <b>arturgost128@gmail.com</b></span>
+    <span>Data: <b>14 de julho de 2026</b></span>
+    <span>Escopo: <b>análise e planejamento — nenhum código alterado</b></span>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="toc">
+    <div class="toc-label">Neste relatório</div>
+    <ol>
+      <li><a href="#diagnostico">1 · Diagnóstico atual</a></li>
+      <li><a href="#impacto">2 · Impacto por funcionalidade</a></li>
+      <li><a href="#modelo">3 · Modelo de dados</a></li>
+      <li><a href="#servicos">4 · Estrutura de serviços</a></li>
+      <li><a href="#fluxo">5 · Fluxo do usuário</a></li>
+      <li><a href="#uxui">6 · UX/UI</a></li>
+      <li><a href="#roadmap">7 · Roadmap em fases</a></li>
+      <li><a href="#riscos">8 · Riscos técnicos</a></li>
+      <li><a href="#recomendacoes">9 · Recomendações finais</a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+    <section id="diagnostico">
+      <div class="sec-num">1</div>
+      <h2 class="serif">Diagnóstico da arquitetura atual</h2>
+      <p class="sec-intro">O Estudix é hoje um app Expo/React Native (SDK 57, React 19, React Navigation 7) 100% client-side: <b>sem backend, sem API, sem banco de dados relacional e sem autenticação</b> além de um nome de exibição local. Toda a persistência é um único blob JSON em <code>AsyncStorage</code> (chave <code>@Estudix:state</code>), lido e escrito por um único contexto React.</p>
+
+      <h3>Estrutura de pastas</h3>
+      <div class="tree">
+<pre>src/
+├─ components/   <b>AppHeader, ConfirmModal, FAB, GradeChart, Toast</b>
+├─ context/      <b>EstudixContext.js</b> — estado global + ~30 mutações + persistência + haptics + toast, tudo num arquivo (781 linhas)
+├─ lib/          notifications.js — notificações locais (expo-notifications)
+├─ navigation/   RootNavigator (stack) + BottomTabNavigator (4 abas)
+├─ screens/      9 telas, uma por rota, sem sub-componentização por domínio
+└─ theme/        tokens de design (cores, tipografia, espaçamento, sombra)</pre>
+      </div>
+      <p>Não existe camada <code>services/</code>, <code>models/</code> ou <code>data/</code> — regra de negócio, acesso a dado e efeito colateral (haptics, toast, notificação) vivem juntos dentro das funções do contexto, chamadas diretamente pelas telas via <code>useEstudix()</code>.</p>
+
+      <h3>Gerenciamento de estado, navegação e persistência</h3>
+      <p>Estado: Context API pura (sem Redux/Zustand), um único <code>Provider</code> na raiz — qualquer <code>dispatchUpdate</code> re-renderiza toda a árvore que consome o contexto. Navegação: <code>native-stack</code> na raiz (Home/Materias/Foco/Anotações em <code>bottom-tabs</code>, e Calendário/Configurações/Matéria/Menu como rotas empilhadas). Persistência: debounce de 1s grava o estado inteiro a cada mudança; sem versionamento de esquema — compatibilidade retroativa é feita por checagens <code>=== undefined</code> ad hoc dentro do <code>loadStore</code>.</p>
+
+      <div class="twocol">
+        <div class="panel strong">
+          <h4>Pontos fortes</h4>
+          <ul>
+            <li>Design tokens centralizados em <code>src/theme/index.js</code> — consistência visual real entre telas.</li>
+            <li>Persistência com debounce evita I/O excessivo a cada tick do timer.</li>
+            <li>Backup/restauração via JSON já funcional (<code>exportData</code>/<code>importData</code>).</li>
+            <li>Repetição espaçada (SM-2 simplificado) já implementada nos flashcards.</li>
+            <li>Conquistas e sequência de dias (<code>currentStreak</code>) já existem em <code>focusSessions</code>.</li>
+            <li>Notificações locais já ligadas ao Pomodoro e a eventos do calendário.</li>
+          </ul>
+        </div>
+        <div class="panel weak">
+          <h4>Pontos fracos</h4>
+          <ul>
+            <li>Contexto único ("God Context") sem separação por domínio.</li>
+            <li>Sem normalização — arrays achatados filtrados por <code>materiaId</code> em cada tela.</li>
+            <li>Sem <code>schemaVersion</code>/migração real do estado persistido.</li>
+            <li>IDs inconsistentes — só matérias têm prefixo (<code>mat-</code>).</li>
+            <li>Regra de negócio, I/O e efeito colateral misturados na mesma função.</li>
+            <li>Nenhum teste automatizado no projeto.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout risk">
+        <div class="callout-label">Risco principal</div>
+        <p>As nove funcionalidades pedidas introduzem pelo menos seis domínios de dado novos (perfil, catálogo, recomendações, plano de estudos, dashboard, IA). Empilhar tudo isso no mesmo <code>EstudixContext.js</code> e no mesmo blob de <code>AsyncStorage</code> tornaria o arquivo insustentável e infla cada backup do usuário com conteúdo que é igual para todo mundo.</p>
+      </div>
+    </section>
+
+    <section id="impacto">
+      <div class="sec-num">2</div>
+      <h2 class="serif">Impacto de cada funcionalidade</h2>
+      <p class="sec-intro">Arquivos afetados, dados novos e componentes por funcionalidade — mapeamento apenas, nada implementado.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Funcionalidade</th><th>Arquivos afetados</th><th>Dados / serviços novos</th><th>Componentes</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="feat-name">1 · Perfil Educacional</td>
+              <td><code>OnboardingScreen.js</code>, <code>ConfiguracoesScreen.js</code></td>
+              <td><code>state.profile</code> — nível, objetivo, disponibilidade semanal, dificuldades, método de estudo</td>
+              <td>Passos extras no onboarding (chips), <code>ProfileEditor</code> em Configurações</td>
+            </tr>
+            <tr>
+              <td class="feat-name">2 · Catálogo Inteligente</td>
+              <td>— (fundação, sem tela própria)</td>
+              <td><code>src/data/catalog/*.js</code> (bundle) + <code>catalogService.js</code></td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td class="feat-name">3 · Cadastro Inteligente</td>
+              <td><code>MateriasScreen.js</code>, <code>MateriaInternaScreen.js</code></td>
+              <td><code>catalogService.matchByName()</code>; <code>materia.catalogSlug</code> opcional</td>
+              <td>Nova aba <b>Orientação</b> na matéria</td>
+            </tr>
+            <tr>
+              <td class="feat-name">4 · Recomendações</td>
+              <td><code>HomeScreen.js</code>, <code>MateriaInternaScreen.js</code></td>
+              <td><code>recommendationEngine.js</code> — pré-requisitos + desempenho + revisões pendentes</td>
+              <td>Bloco "Recomendado para você"</td>
+            </tr>
+            <tr>
+              <td class="feat-name">5 · Plano de Estudos</td>
+              <td><code>CalendarioScreen.js</code>, <code>HomeScreen.js</code></td>
+              <td><code>studyPlanGenerator.js</code>; entidades <code>StudyPlan</code>/<code>ScheduleBlock</code>; materializa em <code>calendar.events</code></td>
+              <td>Nova tela/modal <b>Plano de Estudos</b>; blocos no calendário</td>
+            </tr>
+            <tr>
+              <td class="feat-name">6 · Pomodoro</td>
+              <td><code>FocoScreen.js</code>, <code>ConfiguracoesScreen.js</code></td>
+              <td><code>pomodoroStatsService.js</code> — agregações extraídas do contexto (dado já existe em <code>focusSessions</code>)</td>
+              <td><code>PomodoroIntroModal</code> (reaproveita <code>ConfirmModal</code>)</td>
+            </tr>
+            <tr>
+              <td class="feat-name">7 · Dashboard Inteligente</td>
+              <td><code>HomeScreen.js</code></td>
+              <td><code>insightsEngine.js</code> — deriva cards a partir de dados já existentes</td>
+              <td>Home reorganizada em seções (<code>DashboardSections</code>)</td>
+            </tr>
+            <tr>
+              <td class="feat-name">8 · Escalabilidade</td>
+              <td>— (transversal, não é uma tela)</td>
+              <td>Catálogo particionado por área/nível; carregamento sob demanda</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td class="feat-name">9 · Preparação para IA</td>
+              <td>— (apenas arquitetura)</td>
+              <td><code>src/services/ai/AIProvider.js</code> — interface + implementação determinística inicial</td>
+              <td>—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="modelo">
+      <div class="sec-num">3</div>
+      <h2 class="serif">Modelo de dados recomendado</h2>
+      <p class="sec-intro">Separação estrutural entre <b>catálogo</b> (estático, igual para todos, no bundle do app) e <b>dados do usuário</b> (mutáveis, no <code>AsyncStorage</code>). É a base de tudo o resto — sem ela, o plano de estudos e o dashboard não têm onde se apoiar sem inflar o backup pessoal do usuário.</p>
+
+      <h3>Catálogo (somente leitura, bundle do app)</h3>
+      <div class="entity">
+        <div class="entity-head"><span class="entity-name">EducationLevel</span><span class="entity-tag">catálogo</span></div>
+        <p class="entity-fields"><b>id</b>, <b>label</b>, <b>order</b> — fundamental1, fundamental2, medio, tecnico, faculdade, pos, concurso, enem, vestibular, outro.</p>
+      </div>
+      <div class="entity">
+        <div class="entity-head"><span class="entity-name">DisciplineCatalogEntry</span><span class="entity-tag">catálogo</span></div>
+        <p class="entity-fields"><b>id</b> <i>(slug)</i>, <b>name</b>, <b>aliases[]</b>, <b>levels[]</b>, <b>difficulty</b> <i>(1–5)</i>, <b>description</b>, <b>importance</b>, <b>topics[]</b>, <b>tips[]</b>, <b>commonMistakes[]</b>, <b>prerequisites[]</b>, <b>recommendedOrder</b>, <b>avgWeeklyHours</b>, <b>techniques[]</b> <i>(cada uma tagueada por método — leitura/exercícios/resumo/vídeo)</i>, <b>keywords[]</b>.</p>
+      </div>
+
+      <h3>Dados do usuário (mutáveis, AsyncStorage)</h3>
+      <div class="entity">
+        <div class="entity-head"><span class="entity-name">UserProfile</span><span class="entity-tag">novo</span></div>
+        <p class="entity-fields"><b>educationLevel</b> <i>(ref)</i>, <b>goal</b> <i>('enem'|'vestibular'|'concurso'|'faculdade'|'reforco'|'outro')</i>, <b>weeklyAvailability</b> <i>{ totalMinutes, preferredDays[], preferredPeriod }</i>, <b>difficulties[]</b> <i>(tags: concentração, tempo, ansiedade, base fraca…)</i>, <b>studyMethod</b> <i>('leitura'|'exercicios'|'resumo'|'video'|'misto')</i>.</p>
+      </div>
+      <div class="entity">
+        <div class="entity-head"><span class="entity-name">Materia</span><span class="entity-tag">existente + 1 campo</span></div>
+        <p class="entity-fields">Estrutura atual mantida (<b>id</b>, <b>name</b>, <b>icon</b>, <b>color</b>) + campo opcional <b>catalogSlug</b>, nunca obrigatório.</p>
+      </div>
+      <div class="entity">
+        <div class="entity-head"><span class="entity-name">StudyPlan</span> → <span class="entity-name">ScheduleBlock</span><span class="entity-tag">novo</span></div>
+        <p class="entity-fields"><b>StudyPlan</b>: id, generatedAt, snapshot do perfil usado na geração. <b>ScheduleBlock</b>: id, planId, materiaId, dayOfWeek/date, durationMin, priorityScore, <b>source: 'auto-plan'</b>. Blocos são materializados como <code>calendar.events</code> com <code>sourcePlanId</code>, para que regenerar o plano nunca toque em eventos criados manualmente pelo usuário.</p>
+      </div>
+      <div class="entity">
+        <div class="entity-head"><span class="entity-name">Recommendation / InsightCard</span><span class="entity-tag">calculado, não persistido</span></div>
+        <p class="entity-fields">Derivações em runtime de <code>materias</code> + catálogo (recomendações) e de <code>notas</code>/<code>flashcards</code>/<code>timer</code> (insights do dashboard). Persistir seria dado duplicado e desatualizável.</p>
+      </div>
+
+      <div class="callout ok">
+        <div class="callout-label">Por que o catálogo fica fora do AsyncStorage</div>
+        <p>É idêntico para todos os usuários, vai crescer de dezenas para centenas de disciplinas, e atualizar seu conteúdo não deveria depender de migração de dados pessoais. A relação <code>Materia → DisciplineCatalogEntry</code> é muitos-para-um <b>opcional</b> por <code>slug</code>; <code>prerequisites</code> forma um grafo dirigido dentro do próprio catálogo, reaproveitado tanto pelas recomendações quanto pelo gerador de plano de estudos.</p>
+      </div>
+    </section>
+
+    <section id="servicos">
+      <div class="sec-num">4</div>
+      <h2 class="serif">Estrutura de serviços</h2>
+      <p class="sec-intro">Uma camada nova, <code>src/services/</code>, com funções puras (sem Haptics, Toast, AsyncStorage ou navegação dentro delas) chamadas por hooks finos que combinam o resultado com o estado do contexto. As telas nunca chamam um serviço diretamente.</p>
+
+      <div class="service-grid">
+        <div class="service-card">
+          <span class="svc-name">catalogService</span>
+          <p>Acesso somente-leitura ao catálogo: busca por slug, matching de nome/aliases, listagem por nível.</p>
+          <div class="svc-io"><div><b>Entrada:</b> nome digitado ou slug</div><div><b>Saída:</b> DisciplineCatalogEntry | null</div></div>
+        </div>
+        <div class="service-card">
+          <span class="svc-name">recommendationEngine</span>
+          <p>Cruza matérias do usuário com o catálogo (pré-requisitos, desempenho, revisões pendentes) e gera recomendações.</p>
+          <div class="svc-io"><div><b>Entrada:</b> materias, notas, catálogo</div><div><b>Saída:</b> Recommendation[]</div></div>
+        </div>
+        <div class="service-card">
+          <span class="svc-name">insightsEngine</span>
+          <p>Deriva os cards do dashboard — matéria crítica, hora de revisar, sequência em risco.</p>
+          <div class="svc-io"><div><b>Entrada:</b> estado do usuário</div><div><b>Saída:</b> InsightCard[]</div></div>
+        </div>
+        <div class="service-card">
+          <span class="svc-name">studyPlanGenerator</span>
+          <p>Heurística gulosa e determinística de alocação de tempo por prioridade — não é um solver de otimização exata. Reexecutável a qualquer momento (idempotente): mesma entrada, mesmo plano.</p>
+          <div class="svc-io"><div><b>Entrada:</b> profile, materias, catálogo, provas no calendário</div><div><b>Saída:</b> ScheduleBlock[]</div></div>
+        </div>
+        <div class="service-card">
+          <span class="svc-name">pomodoroStatsService</span>
+          <p>Agregações sobre <code>focusSessions</code> — hoje, semana, produtividade, sequência. Extraído do contexto para ser testável isoladamente.</p>
+          <div class="svc-io"><div><b>Entrada:</b> focusSessions[]</div><div><b>Saída:</b> métricas agregadas</div></div>
+        </div>
+        <div class="service-card">
+          <span class="svc-name">ai/AIProvider</span>
+          <p>Ponto único de extensão para IA futura: <code>suggestPlan()</code>, <code>explainRecommendation()</code>, <code>answerQuestion()</code>. Implementação inicial (<code>LocalRulesProvider</code>) apenas chama os serviços determinísticos acima.</p>
+          <div class="svc-io"><div><b>Entrada:</b> mesma dos serviços que envolve</div><div><b>Saída:</b> mesma forma, venha de regra local ou de IA</div></div>
+        </div>
+      </div>
+
+      <p>Telas → hooks finos (<code>useRecommendations</code>, <code>useInsights</code>, <code>useStudyPlan</code>) → serviços puros → catálogo (bundle) + estado do usuário (AsyncStorage). Haptics, Toast e notificações continuam de responsabilidade das telas/hooks, nunca dos serviços.</p>
+    </section>
+
+    <section id="fluxo">
+      <div class="sec-num">5</div>
+      <h2 class="serif">Fluxo do usuário</h2>
+      <p class="sec-intro">Do primeiro contato ao uso diário, incluindo onde o plano de estudos e o dashboard entram na rotina.</p>
+      <ol class="flow">
+        <li>
+          <div class="step-title">Onboarding — nome</div>
+          <div class="step-body">Passo já existente, sem alteração.</div>
+        </li>
+        <li>
+          <div class="step-title">Onboarding — perfil educacional <i>(expandido)</i></div>
+          <div class="step-body">Nível, objetivo, disponibilidade semanal, dificuldades e método de estudo — como passos curtos de chips, não um formulário longo.</div>
+        </li>
+        <li>
+          <div class="step-title">Onboarding — sugestão de matérias</div>
+          <div class="step-body">Disciplinas comuns do nível/objetivo escolhido, marcáveis; cadastro livre continua disponível.</div>
+        </li>
+        <li>
+          <div class="step-title">Primeiro plano de estudos <i>(opcional)</i></div>
+          <div class="step-body">Com o perfil recém-preenchido, o app oferece gerar um plano inicial; o usuário pode aceitar, ajustar ou pular.</div>
+        </li>
+        <li>
+          <div class="step-title">Dashboard (Home) — rotina diária</div>
+          <div class="step-body">Foco do dia, matéria crítica, revisões pendentes, progresso do plano — tudo priorizado, não uma lista extensa.</div>
+        </li>
+        <li>
+          <div class="step-title">Matéria Interna — aba Orientação</div>
+          <div class="step-body">Dificuldade, pré-requisitos, dicas e ordem recomendada, vindos do catálogo.</div>
+        </li>
+        <li>
+          <div class="step-title">Recomendações cruzadas</div>
+          <div class="step-body">Nota baixa em um pré-requisito gera sugestão tanto na Home quanto na matéria dependente.</div>
+        </li>
+        <li>
+          <div class="step-title">Foco — Pomodoro</div>
+          <div class="step-body">Introdução na primeira visita; sessões podem se vincular ao bloco do plano do dia, quando existir um.</div>
+        </li>
+        <li>
+          <div class="step-title">Regeneração do plano</div>
+          <div class="step-body">Mudança de disponibilidade ou objetivo permite gerar um novo plano sem apagar eventos manuais do calendário.</div>
+        </li>
+      </ol>
+    </section>
+
+    <section id="uxui">
+      <div class="sec-num">6</div>
+      <h2 class="serif">Melhorias de UX/UI</h2>
+      <p class="sec-intro">Ancoradas na linguagem visual que o Estudix já tem — papel quente, azul-marinho como primária, terracota como destaque, serifada nos títulos, chips em pílula — para que as novas telas pareçam parte do mesmo app.</p>
+
+      <h3>Onboarding</h3>
+      <p>Reaproveitar o padrão de <i>dots</i> de progresso (mais passos, mesmo componente). Nível, objetivo e método como grades de chips, no estilo do <code>materiaChip</code> da tela de Foco. Dificuldades como seleção múltipla de tags curtas.</p>
+
+      <h3>Badge de dificuldade</h3>
+      <p>Reaproveitar o padrão de <code>mediaBadge</code> (cores por faixa, já usado em notas) aplicado ao campo <code>difficulty</code> do catálogo.</p>
+
+      <h3>Dashboard</h3>
+      <p>Carrossel horizontal no padrão do bloco de conquistas (<code>achievementsRow</code>), no máximo um card de recomendação e uma dica por vez. Seções priorizadas: crítico primeiro, depois progresso, depois estatísticas — não uma lista plana.</p>
+
+      <h3>Plano de estudos no calendário</h3>
+      <p>Blocos gerados automaticamente aparecem na tira e no mês com a cor da matéria, mas visualmente distintos dos eventos manuais (ex.: borda tracejada ou um pequeno ícone "auto") — o usuário precisa reconhecer de relance o que ele criou e o que o sistema sugeriu.</p>
+
+      <h3>Aba Orientação e introdução ao Pomodoro</h3>
+      <p>Mesmo componente de abas já usado em <code>MateriaInternaScreen.js</code>; texto explicativo do Pomodoro reaproveitando o <code>ConfirmModal</code> existente.</p>
+    </section>
+
+    <section id="roadmap">
+      <div class="sec-num">7</div>
+      <h2 class="serif">Roadmap em fases</h2>
+      <p class="sec-intro">MVP até evolução completa. Escalabilidade (funcionalidade 8) é tratada de forma transversal — via como o catálogo é particionado — e não como uma fase isolada.</p>
+
+      <div class="roadmap">
+        <div class="phase">
+          <div>
+            <div class="phase-tag serif">Fase 1</div>
+            <div class="phase-sub">Fundação</div>
+            <div class="phase-badges"><span class="pill alta">Prioridade alta</span><span class="pill media">Complexidade média</span></div>
+          </div>
+          <div>
+            <ul>
+              <li>Perfil educacional expandido no onboarding (F1)</li>
+              <li>Catálogo estático inicial — 20 a 30 disciplinas (fundação de F2/F8)</li>
+              <li>Cadastro inteligente básico: matching por nome (F3)</li>
+            </ul>
+            <p class="phase-note">Sem dependências. Não altera a estrutura de persistência do usuário.</p>
+          </div>
+        </div>
+
+        <div class="phase">
+          <div>
+            <div class="phase-tag serif">Fase 2</div>
+            <div class="phase-sub">Orientação &amp; Dashboard v1</div>
+            <div class="phase-badges"><span class="pill alta">Prioridade alta</span><span class="pill media">Complexidade média</span></div>
+          </div>
+          <div>
+            <ul>
+              <li>Base de conhecimento completa por disciplina (F2)</li>
+              <li>Aba "Orientação" na matéria (F3)</li>
+              <li>Dashboard reorganizado com <code>insightsEngine</code> — dica do dia, crítico, revisar (F7)</li>
+            </ul>
+            <p class="phase-note">Depende da Fase 1. Os dados de F7 (notas baixas, flashcards vencidos) já existem hoje — é majoritariamente camada de apresentação.</p>
+          </div>
+        </div>
+
+        <div class="phase">
+          <div>
+            <div class="phase-tag serif">Fase 3</div>
+            <div class="phase-sub">Recomendações &amp; Pomodoro</div>
+            <div class="phase-badges"><span class="pill media">Prioridade média</span><span class="pill media">Complexidade média</span></div>
+          </div>
+          <div>
+            <ul>
+              <li>Motor de recomendações entre matérias via grafo de pré-requisitos (F4)</li>
+              <li>Pomodoro expandido: introdução, estatísticas e histórico de produtividade (F6)</li>
+            </ul>
+            <p class="phase-note">Depende da Fase 2 (catálogo com <code>prerequisites</code> preenchido).</p>
+          </div>
+        </div>
+
+        <div class="phase">
+          <div>
+            <div class="phase-tag serif">Fase 4</div>
+            <div class="phase-sub">Plano de Estudos &amp; Dashboard v2</div>
+            <div class="phase-badges"><span class="pill media">Prioridade média</span><span class="pill alta">Complexidade alta</span></div>
+          </div>
+          <div>
+            <ul>
+              <li>Gerador automático de cronograma — <code>studyPlanGenerator</code> (F5)</li>
+              <li>Integração dos blocos gerados ao calendário existente</li>
+              <li>Dashboard v2: progresso do plano ao lado dos insights</li>
+            </ul>
+            <p class="phase-note">A peça mais complexa — deixada para depois porque depende diretamente de F2 (avgWeeklyHours, difficulty) e F4 (prioridade). Fazê-la antes exigiria adivinhar prioridades sem base.</p>
+          </div>
+        </div>
+
+        <div class="phase">
+          <div>
+            <div class="phase-tag serif">Fase 5</div>
+            <div class="phase-sub">Preparação para IA</div>
+            <div class="phase-badges"><span class="pill baixa">Prioridade baixa</span><span class="pill baixa">Complexidade baixa</span></div>
+          </div>
+          <div>
+            <ul>
+              <li>Interface <code>AIProvider</code> com implementação 100% determinística (F9)</li>
+              <li>Nenhuma chamada de IA real — apenas o ponto de extensão</li>
+            </ul>
+            <p class="phase-note">Depende das Fases 1–4: é o motor determinístico delas que a IA vai aprimorar depois, não substituir do zero.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="riscos">
+      <div class="sec-num">8</div>
+      <h2 class="serif">Riscos técnicos</h2>
+      <p class="sec-intro">O que pode dar errado em cada frente, e como reduzir o risco sem reescrever o app.</p>
+
+      <div class="risk-grid">
+        <div class="risk-card">
+          <div class="risk-title">Contexto monolítico crescendo</div>
+          <span class="pill alta">Alto impacto</span>
+          <div class="risk-body">Cada domínio novo somado ao <code>EstudixContext.js</code> aumenta re-renders e o custo de manutenção do arquivo.</div>
+          <div class="risk-mitig"><b>Mitigação:</b> dividir por domínio antes da Fase 3, não depois.</div>
+        </div>
+
+        <div class="risk-card">
+          <div class="risk-title">Lógica de datas já frágil</div>
+          <span class="pill alta">Alto impacto</span>
+          <div class="risk-body">O <code>loadStore</code> atual zera <code>totalMinutesWeek</code> comparando <code>currDate.getDay() &lt; lastDate.getDay()</code> como proxy de "virou a semana" — isso quebra perto de virada de mês. O plano de estudos vai depender pesadamente de datas corretas para agendar blocos.</div>
+          <div class="risk-mitig"><b>Mitigação:</b> corrigir essa comparação antes de construir o gerador de cronograma sobre ela.</div>
+        </div>
+
+        <div class="risk-card">
+          <div class="risk-title">Conflito entre eventos manuais e blocos automáticos</div>
+          <span class="pill media">Médio impacto</span>
+          <div class="risk-body">Regenerar o plano pode sobrescrever ou duplicar eventos que o usuário criou manualmente no calendário.</div>
+          <div class="risk-mitig"><b>Mitigação:</b> campo <code>source</code>/<code>sourcePlanId</code> nos eventos — regeneração só toca no que ela mesma criou.</div>
+        </div>
+
+        <div class="risk-card">
+          <div class="risk-title">Complexidade do gerador de cronograma</div>
+          <span class="pill media">Médio impacto</span>
+          <div class="risk-body">Tentar uma alocação "ótima" (solver) é overengineering para o problema e imprevisível de depurar.</div>
+          <div class="risk-mitig"><b>Mitigação:</b> heurística gulosa simples e determinística, documentada, não um otimizador genérico.</div>
+        </div>
+
+        <div class="risk-card">
+          <div class="risk-title">Confiabilidade de notificações locais</div>
+          <span class="pill media">Médio impacto</span>
+          <div class="risk-body">Permissão negada ou app encerrado pelo SO faz o lembrete de um bloco do plano simplesmente não disparar, sem fallback dentro do app.</div>
+          <div class="risk-mitig"><b>Mitigação:</b> sempre mostrar o bloco do dia no dashboard, independente da notificação ter disparado.</div>
+        </div>
+
+        <div class="risk-card">
+          <div class="risk-title">Catálogo em escala</div>
+          <span class="pill baixa">Baixo impacto hoje</span>
+          <div class="risk-body">Matching de nome ingênuo fica impreciso conforme o catálogo cresce de dezenas para centenas de disciplinas.</div>
+          <div class="risk-mitig"><b>Mitigação:</b> normalizar + índice por <code>aliases</code>/<code>keywords</code> desde a Fase 1, mesmo com poucas entradas.</div>
+        </div>
+
+        <div class="risk-card">
+          <div class="risk-title">Integração futura de IA quebra a promessa de app offline</div>
+          <span class="pill baixa">Risco futuro</span>
+          <div class="risk-body">Custo, latência e dependência de rede não existem hoje no Estudix; uma chamada de IA mal isolada tornaria features hoje instantâneas em algo que espera resposta de rede.</div>
+          <div class="risk-mitig"><b>Mitigação:</b> <code>AIProvider</code> sempre com fallback determinístico local, nunca bloqueante.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="recomendacoes">
+      <div class="sec-num">9</div>
+      <h2 class="serif">Recomendações finais</h2>
+      <p class="sec-intro">Prioridade para soluções simples, desacopladas e de fácil manutenção — sem overengineering.</p>
+      <ul>
+        <li><b>Quebrar o contexto monolítico</b> em contextos por domínio (perfil, matérias, catálogo, plano, pomodoro) antes de somar mais funcionalidades a ele.</li>
+        <li><b>Manter o catálogo fora do AsyncStorage</b> — asset estático no bundle, nunca no backup exportado do usuário.</li>
+        <li><b>Introduzir a camada de serviços puros</b> descrita na seção 4 — testável isoladamente, sem efeitos colaterais, reaproveitável.</li>
+        <li><b>Gerador de plano como heurística simples, não solver</b> — determinístico, idempotente, fácil de explicar ao usuário ("por que este horário?").</li>
+        <li><b>Versionar o esquema do estado</b> (<code>schemaVersion</code> + <code>migrate(state)</code>) em vez dos remendos <code>=== undefined</code> atuais — vira crítico assim que <code>StudyPlan</code> e <code>UserProfile</code> entrarem no blob.</li>
+        <li><b>Preparar a interface de IA desde a Fase 1</b>, com implementação puramente determinística — evita retrabalho na Fase 5.</li>
+        <li><b>Manter a interface enxuta</b>: a inteligência aparece como orientação pontual dentro do que já existe, nunca como um módulo novo e pesado.</li>
+      </ul>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  Relatório de análise arquitetural — nenhuma alteração de código foi feita. Próximo passo natural: validar as Fases 1–2 do roadmap antes de qualquer implementação.
+</footer>

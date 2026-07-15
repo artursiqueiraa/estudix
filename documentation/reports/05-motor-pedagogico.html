@@ -1,0 +1,575 @@
+<title>Estudix — Motor Pedagógico</title>
+<style>
+  :root{
+    --bg: #FBF6EC; --bg-card: #FFFFFF; --bg-raised: #F3ECDC;
+    --ink: #2B2B2B; --ink-soft: #6E6558;
+    --primary: #1E3A5F; --primary-ink: #0F2338; --accent: #C97B4A;
+    --success: #4F6B45; --danger: #A24E27;
+    --border: rgba(43,43,43,0.12); --border-soft: rgba(43,43,43,0.07);
+    --code-bg: #F0E4CC; --shadow: 0 2px 10px rgba(43,32,15,0.06);
+  }
+  :root[data-theme="dark"]{
+    --bg: #171310; --bg-card: #1F1B16; --bg-raised: #26211A;
+    --ink: #EFE7D8; --ink-soft: #A69C89;
+    --primary: #8FB0D6; --primary-ink: #DCE9F7; --accent: #E0995F;
+    --success: #8FBB7C; --danger: #E3947A;
+    --border: rgba(239,231,216,0.14); --border-soft: rgba(239,231,216,0.08);
+    --code-bg: #2C2A22; --shadow: 0 2px 14px rgba(0,0,0,0.35);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg: #171310; --bg-card: #1F1B16; --bg-raised: #26211A;
+      --ink: #EFE7D8; --ink-soft: #A69C89;
+      --primary: #8FB0D6; --primary-ink: #DCE9F7; --accent: #E0995F;
+      --success: #8FBB7C; --danger: #E3947A;
+      --border: rgba(239,231,216,0.14); --border-soft: rgba(239,231,216,0.08);
+      --code-bg: #2C2A22; --shadow: 0 2px 14px rgba(0,0,0,0.35);
+    }
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: var(--bg); color: var(--ink);
+    font-family: -apple-system, "Segoe UI", "Inter", ui-sans-serif, system-ui, sans-serif;
+    font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased;
+  }
+  ::selection{ background: var(--accent); color: #fff; }
+  .serif{ font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif; }
+  h1,h2,h3{ text-wrap: balance; }
+  a{ color: var(--primary); }
+
+  .masthead{ max-width: 940px; margin: 0 auto; padding: 64px 28px 40px; border-bottom: 1px solid var(--border); }
+  .eyebrow{ font-size: 12.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 14px; }
+  .masthead h1{
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    font-weight: 700; font-size: clamp(32px, 5vw, 46px); line-height: 1.12; margin: 0 0 14px; color: var(--ink);
+  }
+  .masthead p{ max-width: 64ch; color: var(--ink-soft); font-size: 17px; margin: 0 0 22px; }
+  .meta-row{ display:flex; flex-wrap:wrap; gap:10px 22px; font-size:13px; color:var(--ink-soft); }
+  .meta-row span b{ color: var(--ink); font-weight: 600; }
+
+  .layout{ max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: 250px minmax(0,1fr); gap: 48px; padding: 40px 28px 100px; align-items: start; }
+  nav.toc{ position: sticky; top: 32px; font-size: 13px; }
+  nav.toc .toc-label{ font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 12px; font-weight: 600; }
+  nav.toc ol{ list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--border); }
+  nav.toc a{ display: block; padding: 5px 0 5px 16px; margin-left: -1px; border-left: 2px solid transparent; color: var(--ink-soft); text-decoration: none; }
+  nav.toc a:hover{ color: var(--primary); border-left-color: var(--border); }
+
+  main{ min-width: 0; }
+  section{ padding-top: 8px; margin-bottom: 56px; scroll-margin-top: 24px; }
+  section + section{ border-top: 1px solid var(--border-soft); padding-top: 44px; }
+  .sec-num{ font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; font-size: 14px; color: var(--accent); font-weight: 700; letter-spacing: 0.04em; }
+  h2{ font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; font-size: 26px; margin: 4px 0 6px; color: var(--ink); }
+  .sec-intro{ color: var(--ink-soft); max-width: 68ch; margin: 0 0 26px; font-size: 15.5px; }
+  h3{ font-size: 15.5px; margin: 28px 0 12px; color: var(--ink); font-weight: 700; }
+  p{ max-width: 72ch; margin: 0 0 14px; }
+  ul, ol{ max-width: 72ch; padding-left: 22px; margin: 0 0 16px; }
+  li{ margin-bottom: 7px; }
+  code{ font-family: ui-monospace, SFMono-Regular, "Cascadia Code", Consolas, monospace; font-size: 0.86em; background: var(--code-bg); padding: 1px 6px; border-radius: 5px; color: var(--ink); }
+
+  .diagram-wrap{ background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin: 18px 0 26px; box-shadow: var(--shadow); overflow-x: auto; }
+  pre.mermaid{ background: transparent; }
+
+  .callout{ background: var(--bg-card); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 10px; padding: 16px 18px; margin: 18px 0; box-shadow: var(--shadow); max-width: 72ch; }
+  .callout.risk{ border-left-color: var(--danger); }
+  .callout.ok{ border-left-color: var(--success); }
+  .callout p:last-child{ margin-bottom: 0; }
+  .callout-label{ font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; margin-bottom: 6px; }
+  .callout .callout-label{ color: var(--accent); }
+  .callout.risk .callout-label{ color: var(--danger); }
+  .callout.ok .callout-label{ color: var(--success); }
+
+  .twocol{ display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 18px 0 8px; }
+  @media (max-width: 640px){ .twocol{ grid-template-columns: 1fr; } }
+  .panel{ background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; box-shadow: var(--shadow); }
+  .panel h4{ margin: 0 0 10px; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; display:flex; align-items:center; gap:8px; }
+  .panel.strong h4{ color: var(--success); }
+  .panel.weak h4{ color: var(--danger); }
+  .panel ul{ margin: 0; padding-left: 18px; max-width: none; }
+  .panel li{ font-size: 14px; margin-bottom: 8px; }
+
+  .table-wrap{ overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; margin: 16px 0 26px; box-shadow: var(--shadow); }
+  table{ border-collapse: collapse; width: 100%; min-width: 720px; background: var(--bg-card); font-size: 13.5px; }
+  thead th{ text-align: left; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); background: var(--bg-raised); padding: 12px 16px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  tbody td{ padding: 13px 16px; border-bottom: 1px solid var(--border-soft); vertical-align: top; }
+  tbody tr:last-child td{ border-bottom: none; }
+  td ul{ margin: 0; padding-left: 16px; max-width: none; }
+  td li{ margin-bottom: 4px; }
+  .feat-name{ font-weight: 700; }
+  .pill{ display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: 0.02em; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+  .pill.alta{ background: var(--danger); color: #fff; }
+  .pill.media{ background: var(--accent); color: #fff; }
+  .pill.baixa{ background: var(--border); color: var(--ink-soft); }
+  .pill.core{ background: var(--primary); color: #fff; }
+
+  .entity{ background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; margin-bottom: 16px; box-shadow: var(--shadow); }
+  .entity-head{ display:flex; align-items:baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+  .entity-name{ font-family: ui-monospace, SFMono-Regular, monospace; font-weight: 700; font-size: 15px; color: var(--primary); }
+  .entity-tag{ font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); border: 1px solid var(--border); border-radius: 999px; padding: 2px 9px; }
+  .entity-fields{ font-size: 13.5px; color: var(--ink-soft); margin: 0; }
+  .entity-fields b{ color: var(--ink); font-weight: 600; }
+
+  .flow{ list-style: none; margin: 20px 0; padding: 0; position: relative; }
+  .flow li{ position: relative; padding: 2px 0 26px 34px; max-width: 68ch; }
+  .flow li::before{ content: ""; position: absolute; left: 6px; top: 4px; bottom: -4px; width: 1px; background: var(--border); }
+  .flow li:last-child::before{ display:none; }
+  .flow li::after{ content: ""; position: absolute; left: 0; top: 4px; width: 13px; height: 13px; border-radius: 50%; background: var(--bg-card); border: 2px solid var(--accent); }
+  .flow .step-title{ font-weight: 700; margin-bottom: 3px; }
+  .flow .step-body{ color: var(--ink-soft); font-size: 14.5px; }
+
+  .risk-grid{ display: flex; flex-direction: column; gap: 12px; margin: 18px 0; }
+  .risk-card{ background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow); padding: 15px 18px; display: grid; grid-template-columns: 1fr auto; gap: 10px 16px; align-items: start; }
+  .risk-card .risk-title{ font-weight: 700; font-size: 14.5px; margin-bottom: 4px; }
+  .risk-card .risk-body{ font-size: 13.5px; color: var(--ink-soft); grid-column: 1 / -1; }
+  .risk-card .risk-mitig{ font-size: 13px; color: var(--ink); grid-column: 1 / -1; margin-top: 2px; }
+  .risk-card .risk-mitig b{ color: var(--success); }
+
+  /* factor breakdown for mastery score */
+  .factor-grid{ display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 18px 0 8px; }
+  @media (max-width: 720px){ .factor-grid{ grid-template-columns: 1fr; } }
+  .factor{ background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; box-shadow: var(--shadow); }
+  .factor .f-head{ display:flex; justify-content: space-between; align-items:baseline; margin-bottom:6px; }
+  .factor .f-name{ font-weight: 700; font-size: 13.5px; }
+  .factor .f-weight{ font-family: ui-monospace, monospace; font-size: 12px; color: var(--primary); font-variant-numeric: tabular-nums; }
+  .factor .f-body{ font-size: 12.5px; color: var(--ink-soft); }
+  .factor.negative .f-weight{ color: var(--danger); }
+
+  .formula-box{
+    background: var(--bg-raised); border: 1px solid var(--border); border-radius: 12px;
+    padding: 18px 20px; margin: 18px 0 22px; font-family: ui-monospace, SFMono-Regular, monospace;
+    font-size: 13.5px; line-height: 1.9; color: var(--ink); overflow-x: auto; white-space: pre;
+  }
+
+  .principle-grid{ display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 18px 0 8px; }
+  @media (max-width: 900px){ .principle-grid{ grid-template-columns: repeat(2,1fr); } }
+  @media (max-width: 480px){ .principle-grid{ grid-template-columns: 1fr; } }
+  .principle{ background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; box-shadow: var(--shadow); }
+  .principle .p-name{ font-weight: 700; font-size: 12.5px; margin-bottom: 4px; color: var(--primary); }
+  .principle .p-body{ font-size: 12px; color: var(--ink-soft); }
+
+  footer{ max-width: 940px; margin: 0 auto; padding: 0 28px 80px; color: var(--ink-soft); font-size: 13px; }
+</style>
+
+<header class="masthead">
+  <div class="eyebrow">Análise Arquitetural · Não implementar</div>
+  <h1 class="serif">O Motor Pedagógico — o cérebro do Estudix</h1>
+  <p>Como um sistema decide, de forma explicável e determinística, se um aluno realmente domina um conteúdo, quando ele vai esquecer, o que estudar a seguir e quando o plano precisa mudar — sem depender de IA, mas pronto para uma.</p>
+  <div class="meta-row">
+    <span>Preparado para: <b>arturgost128@gmail.com</b></span>
+    <span>Data: <b>15 de julho de 2026</b></span>
+    <span>Escopo: <b>análise e planejamento — nenhum código alterado</b></span>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="toc">
+    <div class="toc-label">Neste relatório</div>
+    <ol>
+      <li><a href="#filosofia">1 · Filosofia pedagógica</a></li>
+      <li><a href="#arquitetura">2 · Arquitetura do motor</a></li>
+      <li><a href="#dominio">3 · Domínio do conhecimento</a></li>
+      <li><a href="#retencao">4 · Retenção e revisão</a></li>
+      <li><a href="#progressao">5 · Progressão</a></li>
+      <li><a href="#recomendacao">6 · Recomendações</a></li>
+      <li><a href="#personalizacao">7 · Personalização</a></li>
+      <li><a href="#metricas">8 · Métricas</a></li>
+      <li><a href="#fluxo">9 · Fluxo de decisões</a></li>
+      <li><a href="#modulos">10 · Responsabilidades</a></li>
+      <li><a href="#diagramas">11 · Diagramas</a></li>
+      <li><a href="#riscos">12 · Riscos e evolução</a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+    <section id="filosofia">
+      <div class="sec-num">1</div>
+      <h2 class="serif">Filosofia pedagógica do Estudix</h2>
+      <p class="sec-intro">Um motor pedagógico não é um conjunto de funcionalidades — é uma aposta sobre como aprendizagem funciona. A do Estudix parte de três ideias bem estabelecidas na ciência da aprendizagem, não inventadas para este projeto:</p>
+
+      <div class="twocol">
+        <div class="panel strong">
+          <h4>1 — Aprender é reter, não expor</h4>
+          <ul>
+            <li>Reler ou "ver" conteúdo de novo produz sensação de domínio sem domínio real (fluência ilusória). O que prediz retenção de longo prazo é <b>recuperação ativa</b> (testar-se) e <b>espaçamento</b> (revisar perto do momento em que se esqueceria) — a curva de esquecimento de Ebbinghaus e o "efeito de teste" são a base de por que o Estudix já mede tudo via flashcard/quiz, não via "marcar como lido".</li>
+          </ul>
+        </div>
+        <div class="panel strong">
+          <h4>2 — Ensinar é ajustar a dificuldade certa</h4>
+          <ul>
+            <li>Conteúdo fácil demais entedia; difícil demais frustra e afasta. O ponto ótimo de aprendizagem fica na borda do que o aluno já sabe (zona de desenvolvimento proximal). O motor precisa saber onde essa borda está <i>agora</i> — não apenas "que série o aluno está".</li>
+          </ul>
+        </div>
+      </div>
+      <div class="panel strong" style="margin-top:14px;">
+        <h4>3 — Toda avaliação tem incerteza, e o sistema deve admitir isso</h4>
+        <ul>
+          <li>Um acerto isolado não é domínio; um erro isolado não é fracasso. Sistemas adaptativos reais (o modelo acadêmico por trás disto é conhecido como <i>Bayesian Knowledge Tracing</i>, a mesma família de raciocínio usada em plataformas como Khan Academy e ALEKS) tratam "o que o sistema sabe sobre o aluno" como uma estimativa com um nível de confiança, não um fato — e o Estudix deve fazer o mesmo, de forma simplificada e determinística, sem precisar de aprendizado de máquina para isso.</li>
+        </ul>
+      </div>
+
+      <div class="callout ok">
+        <div class="callout-label">Consequência direta para o design</div>
+        <p>Se aprendizagem é retenção com incerteza, o motor não pode responder só "certo/errado" — precisa responder <b>"o quão certo eu estou de que o aluno sabe isso, e por quanto tempo isso continua verdade"</b>. Todo o resto deste documento decorre dessa frase.</p>
+      </div>
+    </section>
+
+    <section id="arquitetura">
+      <div class="sec-num">2</div>
+      <h2 class="serif">Arquitetura completa do Motor Pedagógico</h2>
+      <p class="sec-intro">O motor não é uma tela nem um serviço isolado — é uma camada de raciocínio entre os eventos do aluno e todo o resto do app. Ele lê eventos, mantém um estado de conhecimento por tópico, e expõe respostas a perguntas específicas.</p>
+
+      <div class="diagram-wrap">
+<pre class="mermaid">
+flowchart LR
+    subgraph EV["EVENTOS — fontes de evidência"]
+        F1[Flashcard revisado]
+        F2[Quiz respondido]
+        F3[Nota registrada]
+        F4[Sessão Pomodoro concluída]
+        F5[Dias sem contato]
+    end
+
+    EV --> MP{{"MOTOR PEDAGÓGICO"}}
+
+    subgraph MP_IN["lê estrutura de"]
+        GC[Grafo de Conhecimento]
+        CC[Catálogo Curricular]
+    end
+    MP_IN --> MP
+
+    MP --> ST["Estado de Domínio\npor Tópico (score + confiança)"]
+    ST --> D1["Motor de Retenção"]
+    ST --> D2["Motor de Progressão"]
+    ST --> D3["Motor de Recomendação"]
+
+    D1 --> OUT1[Fila de revisão priorizada]
+    D2 --> OUT2["Pode avançar? / Deve voltar?"]
+    D3 --> OUT3["Próxima ação sugerida + motivo"]
+
+    OUT1 --> MD[Mentor Digital]
+    OUT2 --> MD
+    OUT3 --> MD
+    MD --> UI["Comunicação com o aluno\n(tom, timing, texto)"]
+</pre>
+      </div>
+
+      <div class="callout">
+        <div class="callout-label">Reconciliando com o relatório anterior</div>
+        <p>No relatório do Mentor Digital, "Mentor" e "motor de regras" apareciam como a mesma coisa. Agora que o Motor Pedagógico está desenhado, a divisão fica mais precisa: o <b>Motor Pedagógico raciocina e mede</b> (o que o aluno sabe, com que confiança, o que revisar, se pode avançar); o <b>Mentor Digital comunica</b> — traduz as saídas do motor em mensagens, tom e timing. Um é o cérebro, o outro é a voz. Nenhuma decisão nova aqui invalida o relatório anterior — só separa duas responsabilidades que estavam fundidas.</p>
+      </div>
+
+      <h3>As dez perguntas — e qual sub-motor responde cada uma</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Pergunta</th><th>Quem responde</th><th>Com base em quê</th></tr></thead>
+          <tbody>
+            <tr><td>O aluno sabe este conteúdo?</td><td><span class="pill core">Domínio</span></td><td><code>MasteryScore</code> acima do limiar mínimo (seção 3)</td></tr>
+            <tr><td>O aluno realmente domina, ou só decorou?</td><td><span class="pill core">Domínio</span></td><td><code>Confidence</code> — decorar gera acertos com poucas fontes de evidência distintas; domínio real tem evidência diversa (flashcard + quiz + nota) e espaçada no tempo</td></tr>
+            <tr><td>O aluno esqueceu?</td><td><span class="pill core">Retenção</span></td><td>Decaimento por tempo desde o último contato ultrapassou o intervalo esperado (seção 4)</td></tr>
+            <tr><td>O aluno precisa revisar?</td><td><span class="pill core">Retenção</span></td><td>Estado <code>Necessita Revisão</code> ativo (seção 3) ou tópico dentro da janela de risco de esquecimento</td></tr>
+            <tr><td>Qual é o próximo assunto ideal?</td><td><span class="pill core">Recomendação</span></td><td>Maior prioridade entre: revisão urgente &gt; pré-requisito pendente &gt; próximo tópico natural (seção 6)</td></tr>
+            <tr><td>Existe pré-requisito pendente?</td><td><span class="pill core">Progressão</span></td><td><code>Topic.prerequisites</code> do Grafo de Conhecimento com <code>MasteryScore</code> abaixo do limiar</td></tr>
+            <tr><td>Vale a pena avançar?</td><td><span class="pill core">Progressão</span></td><td><code>MasteryScore</code> + <code>Confidence</code> + pré-requisitos satisfeitos, todos juntos (seção 5)</td></tr>
+            <tr><td>O ritmo está adequado?</td><td><span class="pill core">Personalização</span></td><td>Comparação entre ritmo real (tópicos avançados/semana) e o necessário para a data da prova (seção 7)</td></tr>
+            <tr><td>O plano precisa ser reorganizado?</td><td><span class="pill core">Recomendação + Progressão</span></td><td>Qualquer mudança relevante de estado (regressão, atraso de ritmo) dispara recálculo do Plano de Estudos</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="dominio">
+      <div class="sec-num">3</div>
+      <h2 class="serif">Modelo de domínio do conhecimento</h2>
+      <p class="sec-intro">Dois níveis: um <b>score contínuo</b> (o que o motor calcula) e um <b>estado discreto</b> (o que é comunicado ao aluno). Separar os dois é o que permite calibrar os limiares sem redesenhar a experiência.</p>
+
+      <h3>O score de domínio — nunca apenas tempo, pomodoros ou número de exercícios</h3>
+      <p>Esses três sinais medem <i>esforço</i>, não <i>aprendizagem</i> — um aluno pode acumular horas sem reter nada, ou dominar algo rápido. Eles entram no modelo apenas como insumo de <b>consistência</b>, nunca como o score em si.</p>
+
+      <div class="formula-box">MasteryScore(tópico) =
+    0.40 × AcuráciaRecente        (acertos, com peso maior para os mais recentes)
+  + 0.25 × RetençãoConfirmada     (acertou DEPOIS de um intervalo, não só em sequência)
+  + 0.15 × Consistência           (regularidade dos contatos ao longo do tempo)
+  + 0.10 × AjusteDeDificuldade    (dominar um tópico difícil pesa mais)
+  − DecaimentoPorTempo(dias sem contato)
+
+resultado sempre entre 0 e 1</div>
+
+      <div class="factor-grid">
+        <div class="factor">
+          <div class="f-head"><span class="f-name">Acurácia Recente</span><span class="f-weight">peso 0.40</span></div>
+          <div class="f-body">Taxa de acerto em flashcards/quiz/exercícios, com decaimento exponencial simples — um erro de ontem pesa mais que um erro de um mês atrás.</div>
+        </div>
+        <div class="factor">
+          <div class="f-head"><span class="f-name">Retenção Confirmada</span><span class="f-weight">peso 0.25</span></div>
+          <div class="f-body">Não é "acertou" — é "acertou depois que o esquecimento teve chance de agir". Reaproveita exatamente o que o SM-2 já mede via <code>easeFactor</code>/<code>interval</code>/<code>repetitions</code> nos flashcards hoje.</div>
+        </div>
+        <div class="factor">
+          <div class="f-head"><span class="f-name">Consistência</span><span class="f-weight">peso 0.15</span></div>
+          <div class="f-body">Regularidade dos contatos, não volume — um aluno que estuda um pouco toda semana retém melhor que um que faz uma maratona e some (efeito de espaçamento).</div>
+        </div>
+        <div class="factor">
+          <div class="f-head"><span class="f-name">Ajuste de Dificuldade</span><span class="f-weight">peso 0.10</span></div>
+          <div class="f-body"><code>Topic.difficulty</code> do Grafo de Conhecimento — dominar algo difícil conta mais; errar algo fácil é mais informativo (mais preocupante) que errar algo difícil.</div>
+        </div>
+        <div class="factor negative">
+          <div class="f-head"><span class="f-name">Decaimento por Tempo</span><span class="f-weight">subtrai</span></div>
+          <div class="f-body">Uma curva de esquecimento simplificada aplicada sobre o score guardado — recalculada sob demanda (na hora de ler o score), nunca precisa de um job rodando em segundo plano.</div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <div class="callout-label">Os pesos são um ponto de partida, não uma verdade fixa</div>
+        <p>Esses valores (0.40/0.25/0.15/0.10) são uma heurística inicial razoável, calibrável com uso real — não um modelo treinado. É exatamente aqui que uma IA futura teria o encaixe mais natural: aprender pesos <i>por aluno</i> em vez dos pesos fixos, sem mudar a forma da fórmula nem quem a consome.</p>
+      </div>
+
+      <h3>Confiança — o quanto o motor confia no próprio score</h3>
+      <p><code>Confidence(tópico)</code> cresce com o <b>número de avaliações distintas</b> e a <b>diversidade de fontes</b> (flashcard + quiz + nota conta mais que só flashcard repetido) e com a <b>dispersão no tempo</b> dessas avaliações. Um único acerto de sorte nunca gera confiança alta — é o que distingue "decorou" de "domina" na tabela da seção 2.</p>
+
+      <h3>Estados — um grafo, não uma escada</h3>
+      <p>Os sete estados sugeridos são bons pontos de comunicação com o aluno, mas <code>Necessita Revisão</code> não é um degrau seguinte a <code>Dominado</code> — é algo que pode acontecer a partir de qualquer estado avançado, e some de volta quando a revisão é bem-sucedida. Por isso o modelo certo é um grafo com uma trilha de progresso e um "modificador" de urgência, não uma fila única.</p>
+
+      <div class="diagram-wrap">
+<pre class="mermaid">
+stateDiagram-v2
+    [*] --> NaoIniciado
+    NaoIniciado --> Explorando: primeiro contato com o tópico
+    Explorando --> Aprendendo: primeira avaliação registrada
+    Aprendendo --> EmDesenvolvimento: acurácia recente acima do mínimo
+    EmDesenvolvimento --> Consolidando: 1ª revisão espaçada bem-sucedida
+    Consolidando --> Dominado: retenção confirmada 2x + confiança alta
+    Dominado --> NecessitaRevisao: decaimento por tempo cruza o limiar
+    Consolidando --> NecessitaRevisao: revisão falhou
+    NecessitaRevisao --> Consolidando: revisão bem-sucedida
+    NecessitaRevisao --> Dominado: revisão bem-sucedida + confiança já era alta
+    EmDesenvolvimento --> Aprendendo: sequência de erros recentes
+</pre>
+      </div>
+    </section>
+
+    <section id="retencao">
+      <div class="sec-num">4</div>
+      <h2 class="serif">Modelo de retenção e revisão</h2>
+      <p class="sec-intro">Generaliza para o nível de <i>tópico</i> o que o SM-2 já faz por <i>flashcard</i> — não substitui, agrega.</p>
+      <ul>
+        <li><b>Quando revisar.</b> Um tópico entra na fila de revisão quando seu <code>MasteryScore</code> decaído (seção 3) cruza o limiar de <code>NecessitaRevisao</code>, ou quando a proporção de flashcards associados com <code>dueDate</code> vencido ultrapassa um percentual.</li>
+        <li><b>O que revisar.</b> A fila prioriza por <b>risco de esquecimento iminente</b> (menor margem até o limiar) cruzado com <b>importância</b> (é pré-requisito de quantos outros tópicos?) e <b>urgência externa</b> (existe prova marcada no calendário para essa disciplina?).</li>
+        <li><b>Intervalo ideal.</b> Já resolvido pelo SM-2 por flashcard (<code>reviewFlashcard</code>, já implementado); no nível de tópico, o intervalo é a agregação dos intervalos de seus flashcards/avaliações mais recentes.</li>
+        <li><b>Quando reduzir revisões.</b> Desempenho consistentemente alto ao longo de múltiplos ciclos — o próprio SM-2 já faz isso crescendo o <code>easeFactor</code>; o motor de tópico apenas herda esse comportamento.</li>
+        <li><b>Quando aumentar revisões.</b> Queda de acurácia recente ou hiato longo sem contato — o intervalo encolhe, seguindo a mesma lógica inversa.</li>
+      </ul>
+
+      <h3>Como conversa com flashcards, quizzes, notas e sessões</h3>
+      <p>Cada uma dessas é uma <b>fonte de evidência</b>, não um consumidor de decisão — todas emitem eventos que atualizam o <code>MasteryScore</code> do tópico associado:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Evento</th><th>Peso como evidência</th><th>O que atualiza</th></tr></thead>
+          <tbody>
+            <tr><td>Flashcard revisado (SM-2)</td><td>Alto — evidência direta de retenção espaçada</td><td>Acurácia Recente + Retenção Confirmada</td></tr>
+            <tr><td>Quiz diagnóstico respondido</td><td>Alto — avaliação estruturada e deliberada</td><td>Acurácia Recente + Confiança (fonte diversa)</td></tr>
+            <tr><td>Nota registrada</td><td>Muito alto — avaliação formal externa</td><td>Acurácia Recente com peso reforçado</td></tr>
+            <tr><td>Sessão Pomodoro concluída</td><td>Baixo — sinal de exposição, não de acerto</td><td>Apenas Consistência</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="progressao">
+      <div class="sec-num">5</div>
+      <h2 class="serif">Modelo de progressão</h2>
+      <ul>
+        <li><b>Domínio mínimo</b> — <code>MasteryScore</code> ≥ limiar (ponto de partida sugerido: 0.7).</li>
+        <li><b>Confiança mínima</b> — <code>Confidence</code> ≥ limiar próprio; sem isso, mesmo um score alto não autoriza avançar (evita "passar" um aluno com base num único acerto de sorte).</li>
+        <li><b>Pré-requisitos satisfeitos</b> — todo <code>Topic.prerequisites</code> também acima do domínio mínimo.</li>
+        <li><b>Retenção confirmada</b> — o domínio precisa ter se mantido por pelo menos um ciclo de espaçamento, não só numa avaliação isolada logo após estudar.</li>
+      </ul>
+
+      <h3>Quando recomendar voltar</h3>
+      <p>Se um pré-requisito de algo que o aluno está estudando cair abaixo do limiar (detectado pelo decaimento por tempo), o motor gera uma recomendação de retorno. Isso é sempre uma <b>sugestão do Mentor</b>, nunca um bloqueio de acesso — consistente com a decisão já tomada no relatório de currículo de nunca restringir o que o aluno pode abrir, apenas orientar.</p>
+    </section>
+
+    <section id="recomendacao">
+      <div class="sec-num">6</div>
+      <h2 class="serif">Modelo de recomendações</h2>
+      <p class="sec-intro">Toda recomendação carrega o motivo que a gerou — nunca aparece sem explicação.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Prioridade</th><th>Regra</th><th>Exemplo de motivo exibido</th></tr></thead>
+          <tbody>
+            <tr><td><span class="pill alta">1</span></td><td>Revisão com risco iminente de esquecimento</td><td>"Você estudou isso há 12 dias — o ideal era revisar até amanhã."</td></tr>
+            <tr><td><span class="pill alta">2</span></td><td>Pré-requisito pendente de um tópico já em andamento</td><td>"Antes de Cinemática, sua base em Álgebra ainda está frágil."</td></tr>
+            <tr><td><span class="pill media">3</span></td><td>Próximo tópico natural na sequência do currículo</td><td>"Você concluiu Função do 1º Grau — Função do 2º Grau é o próximo passo."</td></tr>
+            <tr><td><span class="pill media">4</span></td><td>Sinal de fadiga (erros crescentes na mesma sessão, ou Pomodoros incompletos recorrentes)</td><td>"Suas últimas respostas pioraram — talvez seja hora de uma pausa, não de mais conteúdo."</td></tr>
+            <tr><td><span class="pill baixa">5</span></td><td>Exercício/resumo complementar (reforço, não urgente)</td><td>"Já que você domina isso, um exercício de aplicação pode consolidar ainda mais."</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>A recomendação de <b>descanso</b> (regra 4) é um acréscimo direto da psicologia cognitiva ao pedido original: ignorar sinais de fadiga e insistir em "mais conteúdo" é o oposto do que a ciência da aprendizagem recomenda — reconhecer a queda e sugerir pausa é, em si, uma decisão pedagógica.</p>
+    </section>
+
+    <section id="personalizacao">
+      <div class="sec-num">7</div>
+      <h2 class="serif">Modelo de personalização</h2>
+      <p class="sec-intro">Tudo aqui é estatística simples e observável — médias, contagens, tendências — não aprendizado de máquina. Mantém o motor determinístico e auditável.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>O que o sistema aprende</th><th>Como observa</th></tr></thead>
+          <tbody>
+            <tr><td class="feat-name">Melhor horário para estudar</td><td>Agregação dos horários em que sessões de foco foram <i>concluídas</i> (não só iniciadas) com sucesso</td></tr>
+            <tr><td class="feat-name">Duração ideal das sessões</td><td>Correlação entre duração configurada e taxa histórica de conclusão vs. abandono do Pomodoro</td></tr>
+            <tr><td class="feat-name">Formato de conteúdo preferido</td><td>Qual tipo de material (flashcard, checklist, anotação) o aluno mais interage de fato, cruzado com <code>studyMethod</code> já informado no perfil</td></tr>
+            <tr><td class="feat-name">Disciplinas com maior dificuldade</td><td><code>MasteryScore</code> médio mais baixo cruzado com <code>Topic.difficulty</code> intrínseca — a <i>divergência</i> entre dificuldade percebida e dificuldade real é o sinal mais informativo</td></tr>
+            <tr><td class="feat-name">Padrões de procrastinação</td><td>Tópicos/matérias repetidamente adiados — comparação entre o Plano de Estudos sugerido e o que foi de fato executado</td></tr>
+            <tr><td class="feat-name">Evolução da produtividade</td><td>Tendência do domínio médio e da taxa de conclusão de sessões ao longo do tempo</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Essas observações alimentam o Plano de Estudos e as notificações — nunca sobrescrevem o que o aluno criou manualmente, mesmo princípio já estabelecido nos relatórios anteriores.</p>
+
+      <h3>Gamificação inteligente — ligada a domínio real, não a cliques</h3>
+      <ul>
+        <li><b>Conquistas por domínio</b>, não por volume: "Dominou 5 tópicos de Matemática" em vez de "Completou 10 sessões".</li>
+        <li><b>Metas pessoais mensuráveis</b>: o aluno define um alvo (ex.: "dominar Função Quadrática até sexta"); o motor mede progresso real em direção a isso, não apenas presença no app.</li>
+        <li><b>Desafios gerados pelo próprio motor de revisão</b>: "revisar os 3 tópicos com maior risco de esquecimento esta semana" — nunca um desafio aleatório desconectado do estado real do aluno.</li>
+        <li><b>Deliberadamente fora de escopo</b>, reafirmando o relatório de produto anterior: XP genérico, moedas, loot — mecanismos que recompensam clique, não aprendizagem.</li>
+      </ul>
+    </section>
+
+    <section id="metricas">
+      <div class="sec-num">8</div>
+      <h2 class="serif">Métricas de aprendizagem</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Métrica</th><th>Por que representa aprendizagem</th></tr></thead>
+          <tbody>
+            <tr><td class="feat-name">Domínio médio</td><td>Média do <code>MasteryScore</code> entre tópicos ativos — visão geral honesta, não inflada por volume de conteúdo cadastrado</td></tr>
+            <tr><td class="feat-name">Retenção</td><td>% de tópicos "Dominado" que seguem acima do limiar após o intervalo esperado — mede se o domínio é real ou otimismo do sistema</td></tr>
+            <tr><td class="feat-name">Evolução semanal</td><td>Variação do domínio médio semana a semana — progresso, não apenas atividade</td></tr>
+            <tr><td class="feat-name">Consistência</td><td>Regularidade dos contatos ao longo do tempo — o fator com maior correlação com retenção de longo prazo na literatura</td></tr>
+            <tr><td class="feat-name">Tempo efetivo</td><td>Tempo em sessões que geraram evidência de aprendizagem (pelo menos uma avaliação), distinto do tempo total registrado</td></tr>
+            <tr><td class="feat-name">Tópicos críticos</td><td>Baixo domínio + alta importância (pré-requisito de muitos outros) + prova próxima — onde intervir primeiro</td></tr>
+            <tr><td class="feat-name">Tópicos dominados</td><td>Contagem simples, mas só do que passou pelos critérios da seção 5 — não é "visitado", é "dominado de verdade"</td></tr>
+            <tr><td class="feat-name">Confiança do sistema</td><td>Média de <code>Confidence</code> entre tópicos — comunica literalmente "o quanto o Estudix já conhece este aluno"; baixa confiança nunca deve ser exibida como julgamento negativo, só como "ainda coletando dados"</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="fluxo">
+      <div class="sec-num">9</div>
+      <h2 class="serif">Fluxo completo de decisões</h2>
+      <ol class="flow">
+        <li><div class="step-title">Evento acontece</div><div class="step-body">Flashcard revisado, quiz respondido, nota lançada, Pomodoro concluído ou apenas o tempo passando (dias sem contato).</div></li>
+        <li><div class="step-title">Motor Pedagógico recalcula o tópico afetado</div><div class="step-body"><code>MasteryScore</code> e <code>Confidence</code> são recalculados sob demanda — nunca há um job em segundo plano recalculando tudo o tempo todo.</div></li>
+        <li><div class="step-title">Estado é reavaliado</div><div class="step-body">O grafo de estados (seção 3) decide se houve transição — inclusive regressão para <code>Necessita Revisão</code>.</div></li>
+        <li><div class="step-title">Sub-motores reagem à mudança</div><div class="step-body">Retenção reprioriza a fila de revisão; Progressão reavalia se algo dependente ficou bloqueado; Recomendação recalcula a próxima ação sugerida.</div></li>
+        <li><div class="step-title">Mentor traduz em linguagem humana</div><div class="step-body">Pega as saídas técnicas do motor e produz a mensagem, o tom e o momento de exibição.</div></li>
+        <li><div class="step-title">Plano de Estudos e Dashboard refletem o novo estado</div><div class="step-body">Sem exigir nenhuma ação manual do aluno — o recálculo é consequência natural do evento original.</div></li>
+      </ol>
+    </section>
+
+    <section id="modulos">
+      <div class="sec-num">10</div>
+      <h2 class="serif">Responsabilidades de cada módulo</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Módulo</th><th>Papel em relação ao Motor Pedagógico</th></tr></thead>
+          <tbody>
+            <tr><td class="feat-name">Grafo de Conhecimento</td><td>Fornece estrutura: <code>Topic.prerequisites</code>, <code>Topic.difficulty</code> — o motor lê, nunca escreve nele</td></tr>
+            <tr><td class="feat-name">Catálogo Curricular</td><td>Fornece contexto: quais tópicos são relevantes agora, prazos de prova via calendário</td></tr>
+            <tr><td class="feat-name">Mentor Digital</td><td>Consumidor — traduz as saídas do motor em comunicação; não toma decisões pedagógicas por conta própria</td></tr>
+            <tr><td class="feat-name">Plano de Estudos</td><td>Consumidor — usa <code>MasteryScore</code> + urgência de revisão + confiança como entrada de prioridade, em vez de só dificuldade estática</td></tr>
+            <tr><td class="feat-name">Dashboard</td><td>Consumidor — exibe as métricas agregadas da seção 8</td></tr>
+            <tr><td class="feat-name">Flashcards, Quizzes, Notas, Pomodoro</td><td>Fontes de evento — geram a evidência bruta; não consomem decisões, alimentam o motor</td></tr>
+            <tr><td class="feat-name">Calendário</td><td>Fonte de contexto temporal — datas de prova alimentam a priorização de urgência</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="diagramas">
+      <div class="sec-num">11</div>
+      <h2 class="serif">Diagramas</h2>
+      <p class="sec-intro">Os diagramas de arquitetura (seção 2) e de estados de domínio (seção 3) já cobrem a estrutura estática. Falta o fluxo de decisão de ponta a ponta como sequência temporal:</p>
+      <div class="diagram-wrap">
+<pre class="mermaid">
+sequenceDiagram
+    participant Aluno
+    participant Fonte as Flashcard/Quiz/Nota/Pomodoro
+    participant MP as Motor Pedagógico
+    participant SM as Sub-motores (Retenção/Progressão/Recomendação)
+    participant MD as Mentor Digital
+    participant UI as Dashboard/Plano de Estudos
+
+    Aluno->>Fonte: interage (responde, revisa, estuda)
+    Fonte->>MP: emite evento de evidência
+    MP->>MP: recalcula MasteryScore + Confidence do tópico
+    MP->>MP: reavalia estado (grafo da seção 3)
+    MP->>SM: notifica mudança de estado
+    SM->>SM: reprioriza revisão / reavalia progressão / recalcula recomendação
+    SM->>MD: envia saída técnica (score, motivo, ação sugerida)
+    MD->>Aluno: mensagem no tom e momento certos
+    SM->>UI: atualiza métricas e plano
+    UI->>Aluno: reflete o novo estado, sem ação manual
+</pre>
+      </div>
+    </section>
+
+    <section id="riscos">
+      <div class="sec-num">12</div>
+      <h2 class="serif">Riscos, limitações e oportunidades de evolução</h2>
+
+      <h3>Princípios — como o design atende a cada um</h3>
+      <div class="principle-grid">
+        <div class="principle"><div class="p-name">Explicável</div><div class="p-body">Toda recomendação carrega o fator/regra que a gerou (seção 6)</div></div>
+        <div class="principle"><div class="p-name">Previsível</div><div class="p-body">Fórmula com pesos nomeados, sem aleatoriedade</div></div>
+        <div class="principle"><div class="p-name">Determinístico</div><div class="p-body">Mesmo histórico de eventos sempre produz o mesmo score</div></div>
+        <div class="principle"><div class="p-name">Escalável</div><div class="p-body">Opera só sobre Topic/MasteryScore genéricos (seção 3), indiferente à modalidade</div></div>
+        <div class="principle"><div class="p-name">Testável</div><div class="p-body">Função pura: histórico de eventos → score — sem efeito colateral</div></div>
+        <div class="principle"><div class="p-name">Desacoplado da UI</div><div class="p-body">Produz dados/decisões; o Mentor decide como comunicar</div></div>
+        <div class="principle"><div class="p-name">Independente de IA</div><div class="p-body">100% regras e aritmética simples, roda offline</div></div>
+        <div class="principle"><div class="p-name">Compatível com IA futura</div><div class="p-body">Pesos e regras são o ponto de substituição natural, sem mudar a forma dos dados</div></div>
+      </div>
+
+      <h3>Riscos</h3>
+      <div class="risk-grid">
+        <div class="risk-card">
+          <div class="risk-title">Cold start — poucos dados no início</div>
+          <span class="pill alta">Alto impacto</span>
+          <div class="risk-body">Nos primeiros dias de uso, quase todo tópico terá <code>Confidence</code> baixa, mesmo que o score pareça bom.</div>
+          <div class="risk-mitig"><b>Mitigação:</b> sempre exibir confiança junto ao score, e nunca comunicar baixa confiança como julgamento — é "ainda não sei", não "você está mal".</div>
+        </div>
+        <div class="risk-card">
+          <div class="risk-title">Score mal calibrado desmotiva</div>
+          <span class="pill alta">Alto impacto</span>
+          <div class="risk-body">Um limiar de domínio ajustado errado pode sinalizar "fraco" para quem só precisa de mais uma revisão.</div>
+          <div class="risk-mitig"><b>Mitigação:</b> tratar os pesos/limiares como configuráveis e calibrar com uso real antes de qualquer lançamento amplo.</div>
+        </div>
+        <div class="risk-card">
+          <div class="risk-title">Jogar com o sistema ("gaming")</div>
+          <span class="pill media">Médio impacto</span>
+          <div class="risk-body">Decorar o padrão de um flashcard sem entender o conceito pode inflar a acurácia recente.</div>
+          <div class="risk-mitig"><b>Mitigação:</b> cruzar múltiplas fontes de evidência (seção 4) — decorar um flashcard não sustenta acerto em quiz nem em nota formal.</div>
+        </div>
+        <div class="risk-card">
+          <div class="risk-title">Sobre-reação a um período atípico</div>
+          <span class="pill media">Médio impacto</span>
+          <div class="risk-body">Uma semana ruim (doença, prova de outra matéria) pode ser lida como queda permanente de ritmo.</div>
+          <div class="risk-mitig"><b>Mitigação:</b> decaimento e tendências sempre com janelas suaves, nunca mudanças abruptas de estado por um único evento isolado.</div>
+        </div>
+      </div>
+
+      <h3>Oportunidades de evolução (sem mudança estrutural)</h3>
+      <ul>
+        <li>Pesos da fórmula aprendidos por aluno em vez de fixos — a IA prevista no roadmap técnico entra exatamente aqui.</li>
+        <li>Explicações do Mentor mais ricas e variadas geradas por IA, sempre com fallback determinístico disponível.</li>
+        <li>Detecção de padrões de erro mais sutis (ex.: um mesmo tipo de engano recorrente entre tópicos diferentes) — camada adicional sobre o mesmo pipeline de eventos, sem redesenhar o motor.</li>
+      </ul>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  Relatório de análise arquitetural — nenhuma alteração de código foi feita. Constrói sobre os relatórios de arquitetura, produto, currículo e mentor digital já publicados, e sobre a Feature 1 (Perfil Educacional) e o SM-2 já implementados.
+</footer>

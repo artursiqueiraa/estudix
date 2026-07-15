@@ -1,0 +1,436 @@
+<title>Estudix — Currículo Inteligente</title>
+<style>
+  :root{
+    --bg: #FBF6EC; --bg-card: #FFFFFF; --bg-raised: #F3ECDC;
+    --ink: #2B2B2B; --ink-soft: #6E6558;
+    --primary: #1E3A5F; --primary-ink: #0F2338; --accent: #C97B4A;
+    --success: #4F6B45; --danger: #A24E27;
+    --border: rgba(43,43,43,0.12); --border-soft: rgba(43,43,43,0.07);
+    --code-bg: #F0E4CC; --shadow: 0 2px 10px rgba(43,32,15,0.06);
+  }
+  :root[data-theme="dark"]{
+    --bg: #171310; --bg-card: #1F1B16; --bg-raised: #26211A;
+    --ink: #EFE7D8; --ink-soft: #A69C89;
+    --primary: #8FB0D6; --primary-ink: #DCE9F7; --accent: #E0995F;
+    --success: #8FBB7C; --danger: #E3947A;
+    --border: rgba(239,231,216,0.14); --border-soft: rgba(239,231,216,0.08);
+    --code-bg: #2C2A22; --shadow: 0 2px 14px rgba(0,0,0,0.35);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg: #171310; --bg-card: #1F1B16; --bg-raised: #26211A;
+      --ink: #EFE7D8; --ink-soft: #A69C89;
+      --primary: #8FB0D6; --primary-ink: #DCE9F7; --accent: #E0995F;
+      --success: #8FBB7C; --danger: #E3947A;
+      --border: rgba(239,231,216,0.14); --border-soft: rgba(239,231,216,0.08);
+      --code-bg: #2C2A22; --shadow: 0 2px 14px rgba(0,0,0,0.35);
+    }
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: var(--bg); color: var(--ink);
+    font-family: -apple-system, "Segoe UI", "Inter", ui-sans-serif, system-ui, sans-serif;
+    font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased;
+  }
+  ::selection{ background: var(--accent); color: #fff; }
+  .serif{ font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif; }
+  h1,h2,h3{ text-wrap: balance; }
+  a{ color: var(--primary); }
+
+  .masthead{ max-width: 940px; margin: 0 auto; padding: 64px 28px 40px; border-bottom: 1px solid var(--border); }
+  .eyebrow{ font-size: 12.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 14px; }
+  .masthead h1{
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    font-weight: 700; font-size: clamp(32px, 5vw, 46px); line-height: 1.12; margin: 0 0 14px; color: var(--ink);
+  }
+  .masthead p{ max-width: 64ch; color: var(--ink-soft); font-size: 17px; margin: 0 0 22px; }
+  .meta-row{ display:flex; flex-wrap:wrap; gap:10px 22px; font-size:13px; color:var(--ink-soft); }
+  .meta-row span b{ color: var(--ink); font-weight: 600; }
+
+  .layout{ max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: 240px minmax(0,1fr); gap: 48px; padding: 40px 28px 100px; align-items: start; }
+  nav.toc{ position: sticky; top: 32px; font-size: 13.5px; }
+  nav.toc .toc-label{ font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 12px; font-weight: 600; }
+  nav.toc ol{ list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--border); }
+  nav.toc a{ display: block; padding: 6px 0 6px 16px; margin-left: -1px; border-left: 2px solid transparent; color: var(--ink-soft); text-decoration: none; }
+  nav.toc a:hover{ color: var(--primary); border-left-color: var(--border); }
+
+  main{ min-width: 0; }
+  section{ padding-top: 8px; margin-bottom: 56px; scroll-margin-top: 24px; }
+  section + section{ border-top: 1px solid var(--border-soft); padding-top: 44px; }
+  .sec-num{ font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; font-size: 14px; color: var(--accent); font-weight: 700; letter-spacing: 0.04em; }
+  h2{ font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; font-size: 27px; margin: 4px 0 6px; color: var(--ink); }
+  .sec-intro{ color: var(--ink-soft); max-width: 68ch; margin: 0 0 26px; font-size: 15.5px; }
+  h3{ font-size: 16px; margin: 30px 0 12px; color: var(--ink); font-weight: 700; }
+  p{ max-width: 72ch; margin: 0 0 14px; }
+  ul, ol{ max-width: 72ch; padding-left: 22px; margin: 0 0 16px; }
+  li{ margin-bottom: 7px; }
+  code{ font-family: ui-monospace, SFMono-Regular, "Cascadia Code", Consolas, monospace; font-size: 0.86em; background: var(--code-bg); padding: 1px 6px; border-radius: 5px; color: var(--ink); }
+
+  .callout{ background: var(--bg-card); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 10px; padding: 16px 18px; margin: 18px 0; box-shadow: var(--shadow); max-width: 72ch; }
+  .callout.risk{ border-left-color: var(--danger); }
+  .callout.ok{ border-left-color: var(--success); }
+  .callout p:last-child{ margin-bottom: 0; }
+  .callout-label{ font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; margin-bottom: 6px; }
+  .callout .callout-label{ color: var(--accent); }
+  .callout.risk .callout-label{ color: var(--danger); }
+  .callout.ok .callout-label{ color: var(--success); }
+
+  .twocol{ display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 18px 0 8px; }
+  @media (max-width: 640px){ .twocol{ grid-template-columns: 1fr; } }
+  .panel{ background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; box-shadow: var(--shadow); }
+  .panel h4{ margin: 0 0 10px; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; display:flex; align-items:center; gap:8px; }
+  .panel.reuse h4{ color: var(--success); }
+  .panel.new h4{ color: var(--primary); }
+  .panel ul{ margin: 0; padding-left: 18px; max-width: none; }
+  .panel li{ font-size: 14px; margin-bottom: 8px; }
+
+  .table-wrap{ overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; margin: 16px 0 26px; box-shadow: var(--shadow); }
+  table{ border-collapse: collapse; width: 100%; min-width: 720px; background: var(--bg-card); font-size: 13.5px; }
+  thead th{ text-align: left; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); background: var(--bg-raised); padding: 12px 16px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  tbody td{ padding: 13px 16px; border-bottom: 1px solid var(--border-soft); vertical-align: top; }
+  tbody tr:last-child td{ border-bottom: none; }
+  td ul{ margin: 0; padding-left: 16px; max-width: none; }
+  td li{ margin-bottom: 4px; }
+  .feat-name{ font-weight: 700; }
+  .pill{ display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: 0.02em; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+  .pill.reuse{ background: var(--success); color: #fff; }
+  .pill.new{ background: var(--primary); color: #fff; }
+  .pill.alta{ background: var(--danger); color: #fff; }
+  .pill.media{ background: var(--accent); color: #fff; }
+  .pill.baixa{ background: var(--border); color: var(--ink-soft); }
+
+  .entity{ background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; margin-bottom: 16px; box-shadow: var(--shadow); }
+  .entity-head{ display:flex; align-items:baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+  .entity-name{ font-family: ui-monospace, SFMono-Regular, monospace; font-weight: 700; font-size: 15px; color: var(--primary); }
+  .entity-tag{ font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); border: 1px solid var(--border); border-radius: 999px; padding: 2px 9px; }
+  .entity-fields{ font-size: 13.5px; color: var(--ink-soft); margin: 0; }
+  .entity-fields b{ color: var(--ink); font-weight: 600; }
+
+  /* fallback chain */
+  .chain{ display:flex; flex-wrap: wrap; align-items: stretch; gap: 0; margin: 20px 0 8px; }
+  .chain-step{
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 14px 16px; box-shadow: var(--shadow); flex: 1; min-width: 150px;
+  }
+  .chain-step .cs-tag{ font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); font-weight: 700; margin-bottom: 4px; }
+  .chain-step .cs-title{ font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+  .chain-step .cs-body{ font-size: 12.5px; color: var(--ink-soft); }
+  .chain-arrow{ display:flex; align-items:center; justify-content:center; padding: 0 8px; color: var(--ink-soft); font-size: 18px; }
+  @media (max-width: 760px){ .chain{ flex-direction: column; } .chain-arrow{ transform: rotate(90deg); padding: 4px 0; } }
+
+  .flow{ list-style: none; margin: 20px 0; padding: 0; position: relative; }
+  .flow li{ position: relative; padding: 2px 0 26px 34px; max-width: 68ch; }
+  .flow li::before{ content: ""; position: absolute; left: 6px; top: 4px; bottom: -4px; width: 1px; background: var(--border); }
+  .flow li:last-child::before{ display:none; }
+  .flow li::after{ content: ""; position: absolute; left: 0; top: 4px; width: 13px; height: 13px; border-radius: 50%; background: var(--bg-card); border: 2px solid var(--accent); }
+  .flow .step-title{ font-weight: 700; margin-bottom: 3px; }
+  .flow .step-body{ color: var(--ink-soft); font-size: 14.5px; }
+
+  .risk-grid{ display: flex; flex-direction: column; gap: 12px; margin: 18px 0; }
+  .risk-card{ background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow); padding: 15px 18px; display: grid; grid-template-columns: 1fr auto; gap: 10px 16px; align-items: start; }
+  .risk-card .risk-title{ font-weight: 700; font-size: 14.5px; margin-bottom: 4px; }
+  .risk-card .risk-body{ font-size: 13.5px; color: var(--ink-soft); grid-column: 1 / -1; }
+  .risk-card .risk-mitig{ font-size: 13px; color: var(--ink); grid-column: 1 / -1; margin-top: 2px; }
+  .risk-card .risk-mitig b{ color: var(--success); }
+
+  footer{ max-width: 940px; margin: 0 auto; padding: 0 28px 80px; color: var(--ink-soft); font-size: 13px; }
+</style>
+
+<header class="masthead">
+  <div class="eyebrow">Análise Arquitetural · Não implementar</div>
+  <h1 class="serif">Um Estudix que já conhece o currículo brasileiro</h1>
+  <p>Arquitetura para o app resolver automaticamente o currículo do aluno (BNCC + estadual + regional) a partir do perfil educacional e preparar cada disciplina com conteúdo inicial, antes mesmo do primeiro toque em "estudar".</p>
+  <div class="meta-row">
+    <span>Preparado para: <b>arturgost128@gmail.com</b></span>
+    <span>Data: <b>15 de julho de 2026</b></span>
+    <span>Escopo: <b>análise e planejamento — nenhum código alterado</b></span>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="toc">
+    <div class="toc-label">Neste relatório</div>
+    <ol>
+      <li><a href="#arquitetura">1 · Melhor arquitetura</a></li>
+      <li><a href="#modelo">2 · Modelo de dados</a></li>
+      <li><a href="#catalogo">3 · Catálogo curricular</a></li>
+      <li><a href="#fluxo">4 · Fluxo completo</a></li>
+      <li><a href="#atualizacao">5 · Atualização anual</a></li>
+      <li><a href="#ux">6 · Impacto na experiência</a></li>
+      <li><a href="#riscos">7 · Riscos técnicos</a></li>
+      <li><a href="#diferencial">8 · Diferencial competitivo</a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+    <section id="arquitetura">
+      <div class="sec-num">1</div>
+      <h2 class="serif">Melhor arquitetura para essa funcionalidade</h2>
+      <p class="sec-intro">O primeiro ponto a deixar claro: o gargalo real desta funcionalidade não é engenharia — é <b>dado</b>. A BNCC nacional é um documento público, mas não vem pronta em JSON; currículos estaduais têm qualidade e disponibilidade digital muito desiguais entre os 27 estados; "concurso" e "vestibular" nem têm um programa único (cada edital define o seu). A arquitetura certa é a que <b>funciona bem com cobertura parcial desde o dia um</b> e melhora conforme mais currículos forem curados — nunca uma que finja ter os 27 estados prontos de largada.</p>
+
+      <h3>A cadeia de resolução (fallback), não um "currículo único"</h3>
+      <p>Em vez de exigir um currículo estadual completo para cada combinação de UF/rede/série, o sistema resolve em camadas, da mais específica para a mais genérica, e usa a primeira que existir:</p>
+
+      <div class="chain">
+        <div class="chain-step">
+          <div class="cs-tag">Mais específico</div>
+          <div class="cs-title">Currículo do exame</div>
+          <div class="cs-body">Editais de concurso/vestibular específicos, quando curados</div>
+        </div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-step">
+          <div class="cs-tag">&nbsp;</div>
+          <div class="cs-title">Currículo estadual</div>
+          <div class="cs-body">Ex.: Currículo Paulista, quando disponível para aquela UF+série</div>
+        </div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-step">
+          <div class="cs-tag">Sempre disponível</div>
+          <div class="cs-title">BNCC nacional</div>
+          <div class="cs-body">Baseline garantida para toda modalidade/série do país</div>
+        </div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-step">
+          <div class="cs-tag">Último recurso</div>
+          <div class="cs-title">Disciplina genérica</div>
+          <div class="cs-body">Catálogo de disciplinas já previsto no roadmap técnico, sem amarração curricular</div>
+        </div>
+      </div>
+      <p style="margin-top:14px;">Essa cadeia é uma função pura — <code>resolveCurriculo(perfil)</code> — que nunca falha: na pior hipótese, cai no catálogo genérico já planejado. Isso também resolve directamente o "quando existirem" que está no seu próprio pedido — não é uma frase de segurança, é literalmente a arquitetura.</p>
+
+      <h3>Três camadas, três taxas de mudança diferentes</h3>
+      <div class="twocol">
+        <div class="panel new">
+          <h4>Currículo (estático, bundle)</h4>
+          <ul>
+            <li>Muda uma vez por ano (ciclo letivo), não por usuário</li>
+            <li>Igual para todo mundo com o mesmo perfil</li>
+            <li>Nunca entra no <code>AsyncStorage</code> nem no backup do usuário</li>
+            <li>Particionado por UF+modalidade, carregado sob demanda (só o do perfil do usuário)</li>
+          </ul>
+        </div>
+        <div class="panel new">
+          <h4>Provisionamento (acontece uma vez)</h4>
+          <ul>
+            <li>Resolve o currículo → cria as matérias do usuário</li>
+            <li>É o único momento em que "currículo" e "dado do usuário" se tocam</li>
+            <li>A partir daqui, o que foi criado é do usuário — igual a uma matéria criada manualmente</li>
+          </ul>
+        </div>
+      </div>
+      <div class="panel reuse" style="margin-top:14px;">
+        <h4>Dado do usuário (AsyncStorage, já existente)</h4>
+        <ul>
+          <li><code>materias</code>, <code>checklistCategories</code>, <code>flashcards</code>, <code>anotacoes</code> — as mesmas coleções que já existem hoje, sem novas tabelas para "conteúdo pré-carregado"</li>
+          <li>Editável, apagável, substituível — porque é uma linha comum dessas coleções, não uma cópia viva do currículo</li>
+        </ul>
+      </div>
+
+      <div class="callout ok">
+        <div class="callout-label">Por que isso é a decisão certa aqui</div>
+        <p>O pedido é explícito: "o sistema nunca deve substituir automaticamente conteúdos criados pelo usuário". A única forma de garantir isso com certeza arquitetural — não como uma regra de negócio frágil — é o conteúdo pré-carregado <b>nascer</b> como dado comum do usuário (materializado) em vez de viver como uma referência ao currículo que é resolvida toda vez que a tela abre. Depois de materializado, editar um flashcard "sugerido" é E<b>XATAMENTE</b> o mesmo código que já edita um flashcard criado manualmente — nenhuma lógica nova de "isso é especial, cuidado ao editar".</p>
+      </div>
+    </section>
+
+    <section id="modelo">
+      <div class="sec-num">2</div>
+      <h2 class="serif">Modelo de dados recomendado</h2>
+      <p class="sec-intro">Antes de propor campos novos, um achado importante ao reler o código: parte do que este pedido descreve <b>já existe</b>, implementado na Feature 1 (Perfil Educacional). Reaproveitar em vez de duplicar.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Campo pedido agora</th><th>Situação</th><th>Decisão recomendada</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="feat-name">Modalidade (Fundamental/Médio/Técnico/EJA/ENEM/Vestibular/Concurso)</td>
+              <td><span class="pill reuse">Já existe</span></td>
+              <td><code>state.settings.educationLevel</code> já cobre essa lista quase inteira (10 valores). Só falta adicionar <code>'eja'</code> ao array <code>EDUCATION_LEVELS</code> — não criar um campo <code>modalidade</code> paralelo.</td>
+            </tr>
+            <tr>
+              <td class="feat-name">Objetivo principal</td>
+              <td><span class="pill reuse">Já existe</span></td>
+              <td><code>state.settings.goal</code>, já implementado.</td>
+            </tr>
+            <tr>
+              <td class="feat-name">Data prevista da prova</td>
+              <td><span class="pill reuse">Reaproveita entidade existente</span></td>
+              <td>Não é um campo de <code>settings</code> — é um <b>evento</b>. <code>CalendarioScreen.js</code> já tem <code>type: 'prova'</code> na lista <code>EVENT_TYPES</code>. Criar esse evento automaticamente via <code>saveEvent(...)</code> (já existe) conecta de graça com o Plano de Estudos da Fase 4 do roadmap técnico, que já usa "provas no calendário" como sinal de prioridade.</td>
+            </tr>
+            <tr>
+              <td class="feat-name">UF, município, rede de ensino, série, turno, semestre/bimestre atual</td>
+              <td><span class="pill new">Genuinamente novo</span></td>
+              <td>Nenhuma sobreposição com o que existe — campos novos em <code>state.settings</code>, seguindo o mesmo padrão de constantes fixas (<code>UF_LIST</code>, <code>REDES_ENSINO</code>, <code>TURNOS</code>) já usado para <code>EDUCATION_LEVELS</code>/<code>GOALS</code>.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Entidades de currículo (estáticas, bundle — nunca no AsyncStorage)</h3>
+      <div class="entity">
+        <div class="entity-head"><span class="entity-name">CurriculumDocument</span><span class="entity-tag">currículo</span></div>
+        <p class="entity-fields"><b>id</b>, <b>escopo</b> <i>('nacional' | 'estadual' | 'exame')</i>, <b>uf</b> <i>(nulo quando nacional)</i>, <b>modalidade</b>, <b>serie</b>, <b>vigencia</b> <i>(ano letivo de validade)</i>, <b>disciplinas: DisciplineOffering[]</b>.</p>
+      </div>
+      <div class="entity">
+        <div class="entity-head"><span class="entity-name">DisciplineOffering</span><span class="entity-tag">dentro de um CurriculumDocument</span></div>
+        <p class="entity-fields"><b>disciplinaSlug</b> <i>(referência ao catálogo genérico de disciplinas já previsto no roadmap técnico — identidade estável, ex. "matemática")</i>, <b>cargaHorariaSemanal</b>, <b>competencias[]</b>, <b>habilidades[]</b> <i>(códigos BNCC + descrição, quando aplicável)</i>, <b>conteudosPrevistos: ContentTopic[]</b>.</p>
+      </div>
+      <div class="entity">
+        <div class="entity-head"><span class="entity-name">ContentTopic</span><span class="entity-tag">currículo</span></div>
+        <p class="entity-fields"><b>id</b>, <b>titulo</b>, <b>resumo</b>, <b>formulas[]</b>, <b>palavrasChave[]</b>, <b>prerequisitos[]</b> <i>(ids de outros tópicos)</i>, <b>errosComuns[]</b>, <b>dicas[]</b>, <b>tempoMedioMinutos</b>, <b>periodoSugerido</b> <i>(bimestre/trimestre — usado para priorizar, nunca para restringir)</i>, <b>mapaMental</b> <i>(árvore simples de nós)</i>, <b>glossario[]</b> <i>{`{ termo, definicao }`}</i>.</p>
+      </div>
+      <div class="entity">
+        <div class="entity-head"><span class="entity-name">DiagnosticQuestion</span><span class="entity-tag">currículo</span></div>
+        <p class="entity-fields"><b>id</b>, <b>disciplinaSlug</b>, <b>pergunta</b>, <b>opcoes[]</b>, <b>indicaRevisaoDoTopico</b> <i>(id de um ContentTopic)</i>.</p>
+      </div>
+
+      <h3>Dado do usuário (AsyncStorage — extensões pequenas de entidades já existentes)</h3>
+      <div class="entity">
+        <div class="entity-head"><span class="entity-name">Materia</span><span class="entity-tag">existente + 2 campos opcionais</span></div>
+        <p class="entity-fields">Ganha <b>curriculumDocId</b> <i>(qual currículo regional/período foi seguido na criação — separado do <code>catalogSlug</code> já proposto, que identifica a disciplina em si)</i> e <b>diagnostic</b> <i>{`{ completedAt, weakTopicIds[] }`}</i>, opcional, preenchido só se o usuário fizer o quiz.</p>
+      </div>
+      <div class="entity">
+        <div class="entity-head"><span class="entity-name">checklistCategories / flashcards / anotacoes</span><span class="entity-tag">existentes + 1 campo opcional</span></div>
+        <p class="entity-fields">Ganham <b>origin</b> <i>('curriculo' | 'usuario', default 'usuario')</i> — só para permitir UI diferenciada (ex.: um selo discreto "sugerido pelo Estudix"). Não afeta em nada como o item é editado, apagado ou salvo — é o mesmo código de sempre.</p>
+      </div>
+    </section>
+
+    <section id="catalogo">
+      <div class="sec-num">3</div>
+      <h2 class="serif">Estrutura do catálogo curricular</h2>
+      <p class="sec-intro">A pergunta que decide a arquitetura aqui não é "que campos tem cada disciplina" — é "como isso não vira um app de 2GB". Fazendo as contas: 27 UFs × ~4 modalidades relevantes × ~3 séries × ~10 disciplinas × conteúdo rico por tópico é, com folga, grande demais para embutir inteiro em todo APK/IPA.</p>
+
+      <h3>Particionamento por UF + modalidade, carregado sob demanda</h3>
+      <p>Cada <code>CurriculumDocument</code> vive em seu próprio arquivo JSON (<code>src/data/curriculum/sp/medio-3ano.json</code>, <code>src/data/curriculum/bncc/medio-3ano.json</code>...). O app nunca carrega o Brasil inteiro — resolve o perfil do usuário e faz um <i>import dinâmico</i> só do(s) documento(s) relevantes. Isso mantém o bundle inicial do app pequeno independente de quantos estados forem sendo cobertos com o tempo.</p>
+
+      <h3>BNCC como piso, currículo estadual como cobertura</h3>
+      <table>
+        <thead><tr><th>Camada</th><th>Cobertura hoje</th><th>Fonte</th></tr></thead>
+      </table>
+      <div class="table-wrap">
+        <table>
+          <tbody>
+            <tr><td class="feat-name">BNCC nacional</td><td><span class="pill reuse">100% do país</span></td><td>Documento público estruturado (habilidades codificadas), digitalização única e reaproveitável para todas as UFs</td></tr>
+            <tr><td class="feat-name">Currículos estaduais</td><td><span class="pill media">Desigual entre estados</span></td><td>Alguns estados publicam currículo próprio digitalizável; outros não têm nada além da BNCC — nesses casos o fallback já cobre sem quebrar nada</td></tr>
+            <tr><td class="feat-name">Concurso / Vestibular</td><td><span class="pill baixa">Caso a caso</span></td><td>Sem programa nacional único — cada edital define o seu; tratar com granularidade de "grandes áreas", não fingir profundidade BNCC que não existe para esse objetivo</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>De onde vem o trabalho de curadoria</h3>
+      <p>Isso não é um problema que se resolve só com código — é um projeto de conteúdo. A digitalização estruturada de currículos (extrair de PDFs oficiais para o formato <code>ContentTopic</code>) é candidata natural a um pipeline semi-automatizado com revisão humana, usando a mesma camada de abstração de IA já prevista no roadmap técnico (<code>AIProvider</code>) — não para gerar conteúdo pedagógico sem revisão, mas para acelerar a extração/estruturação inicial que depois passa por curadoria antes de entrar no bundle.</p>
+    </section>
+
+    <section id="fluxo">
+      <div class="sec-num">4</div>
+      <h2 class="serif">Fluxo completo — do cadastro à disciplina pronta</h2>
+      <ol class="flow">
+        <li>
+          <div class="step-title">Perfil educacional expandido</div>
+          <div class="step-body">Além do que já existe (nível, objetivo), o onboarding pergunta UF, rede de ensino, série, turno e — se aplicável — semestre/bimestre atual e data da prova.</div>
+        </li>
+        <li>
+          <div class="step-title">Resolução do currículo</div>
+          <div class="step-body"><code>resolveCurriculo(perfil)</code> percorre a cadeia de fallback (seção 1) e retorna um ou mais <code>CurriculumDocument</code> — sempre retorna algo, nunca falha.</div>
+        </li>
+        <li>
+          <div class="step-title">Provisionamento das matérias</div>
+          <div class="step-body">Uma única ação nova de contexto (ex. <code>provisionMateriasFromCurriculum</code>) cria todas as matérias do currículo resolvido num só <code>dispatchUpdate</code> — reaproveitando a mesma lógica de cor/ícone cíclico que <code>saveMateria</code> já usa, não uma reimplementação.</div>
+        </li>
+        <li>
+          <div class="step-title">Evento de prova no calendário (quando informado)</div>
+          <div class="step-body"><code>saveEvent(..., type: 'prova')</code> — a mesma função e o mesmo tipo de evento que já existem em <code>CalendarioScreen.js</code>.</div>
+        </li>
+        <li>
+          <div class="step-title">"Começar a Estudar" — materialização sob demanda</div>
+          <div class="step-body">No provisionamento, cada matéria carrega só a <i>referência</i> ao currículo (leve). O conteúdo pesado (checklist, flashcards, resumo) só é <b>criado de fato</b> na primeira vez que o usuário abre aquela matéria — evita inflar o backup do usuário com conteúdo de 12 matérias que ele talvez nunca abra.</div>
+        </li>
+        <li>
+          <div class="step-title">Quiz diagnóstico (opcional)</div>
+          <div class="step-body">Poucas perguntas de sim/não; o resultado vira <code>materia.diagnostic.weakTopicIds</code>, consumido pelo motor de recomendações e pelos insights do dashboard já previstos no roadmap técnico.</div>
+        </li>
+        <li>
+          <div class="step-title">Personalização contínua</div>
+          <div class="step-body">A partir daqui, tudo é dado comum do usuário. Editar, apagar ou substituir um flashcard "sugerido" é o mesmo fluxo — e o mesmo código — de sempre.</div>
+        </li>
+      </ol>
+    </section>
+
+    <section id="atualizacao">
+      <div class="sec-num">5</div>
+      <h2 class="serif">Estratégia para manter os currículos atualizados</h2>
+      <p class="sec-intro">O princípio que já rege o resto do app se aplica aqui sem exceção: atualizar o catálogo <b>nunca</b> pode alterar silenciosamente dado que o usuário já tem.</p>
+      <ul>
+        <li><b>Versionamento por vigência.</b> Cada <code>CurriculumDocument</code> tem um ano de vigência. Um usuário que já provisionou suas matérias em 2026 continua com as matérias de 2026 mesmo depois do currículo 2027 chegar — a atualização só afeta <i>novos</i> provisionamentos.</li>
+        <li><b>MVP: bundle estático, atualizado a cada release do app.</b> Suficiente para o ciclo anual de currículo — não é algo que muda no meio do ano letivo na prática.</li>
+        <li><b>Evolução natural: fetch remoto com cache local.</b> Quando o catálogo crescer o bastante para não caber mais em atualizações de app store (ou precisar de correção fora do ciclo de release), o mesmo <code>catalogService</code> já planejado no roadmap técnico ganha uma fonte remota com cache — sem mudar quem o consome. Não construir isso agora seria overengineering; a estrutura já fica pronta para essa migração sem retrabalho.</li>
+        <li><b>Correções pontuais não exigem migração de dado do usuário</b> — só afetam o bundle de currículo, que é somente leitura.</li>
+      </ul>
+    </section>
+
+    <section id="ux">
+      <div class="sec-num">6</div>
+      <h2 class="serif">Impacto na experiência do usuário</h2>
+      <ul>
+        <li><b>Ativação imediata.</b> O tempo entre "abrir o app pela primeira vez" e "ver uma disciplina com conteúdo de verdade" cai de "cadastrar tudo manualmente" para minutos — ataca de frente o principal ponto de atrito já identificado no relatório de produto (tela vazia no primeiro contato).</li>
+        <li><b>Onboarding mais longo, mas opcional em cada campo.</b> UF/rede/série/turno somam perguntas ao cadastro já existente (que passou de 2 para 3 passos na Feature 1). Cada campo novo deve permanecer pulável — o app já funciona sem eles, só com resolução menos específica na cadeia de fallback.</li>
+        <li><b>Risco de sobrecarga na primeira abertura de cada matéria.</b> Doze matérias "prontas" de uma vez podem parecer spam se aparecerem todas cheias ao mesmo tempo — mitigado pela materialização sob demanda (seção 4): cada matéria só ganha conteúdo pesado quando o próprio usuário a abre.</li>
+        <li><b>Diagnóstico precisa de tom cuidadoso.</b> Sinalizar "nível baixo" de cara pode desmotivar — o enquadramento importa tanto quanto os dados (ecoa a recomendação do relatório de produto sobre gamificação ética: mastery, não julgamento).</li>
+      </ul>
+    </section>
+
+    <section id="riscos">
+      <div class="sec-num">7</div>
+      <h2 class="serif">Riscos técnicos</h2>
+      <div class="risk-grid">
+        <div class="risk-card">
+          <div class="risk-title">Tamanho do bundle</div>
+          <span class="pill alta">Alto impacto</span>
+          <div class="risk-body">Currículo rico multiplicado por 27 estados facilmente ultrapassa um tamanho razoável de app.</div>
+          <div class="risk-mitig"><b>Mitigação:</b> particionamento por UF+modalidade com import dinâmico (seção 3) — nunca carregar o Brasil inteiro de uma vez.</div>
+        </div>
+        <div class="risk-card">
+          <div class="risk-title">Cobertura desigual entre estados</div>
+          <span class="pill alta">Alto impacto</span>
+          <div class="risk-body">MVP provavelmente cobre bem 2–3 estados e cai para "só BNCC genérico" nos demais — expectativa desigual entre usuários de estados diferentes.</div>
+          <div class="risk-mitig"><b>Mitigação:</b> a cadeia de fallback já garante que "genérico" nunca é "quebrado" — e a UI deve deixar claro qual camada foi usada, sem prometer o que não tem.</div>
+        </div>
+        <div class="risk-card">
+          <div class="risk-title">Rede pública vs. privada na prática</div>
+          <span class="pill media">Médio impacto</span>
+          <div class="risk-body">Escolas privadas frequentemente seguem material apostilado próprio, não o currículo estadual oficial — "rede de ensino" no perfil pode sugerir uma precisão que o dado não tem.</div>
+          <div class="risk-mitig"><b>Mitigação:</b> tratar "rede" como ajuste de tom/ênfase das dicas, não como fonte de conteúdo apostilado específico — isso é um mercado à parte, fora de escopo.</div>
+        </div>
+        <div class="risk-card">
+          <div class="risk-title">Auto-criação em massa sentida como spam</div>
+          <span class="pill media">Médio impacto</span>
+          <div class="risk-body">12 matérias com dezenas de itens cada aparecendo de uma vez pode sobrecarregar visualmente.</div>
+          <div class="risk-mitig"><b>Mitigação:</b> materialização sob demanda (seção 4), já parte do desenho, não um ajuste posterior.</div>
+        </div>
+        <div class="risk-card">
+          <div class="risk-title">Internacionalização</div>
+          <span class="pill baixa">Risco futuro</span>
+          <div class="risk-body">A estrutura de <code>CurriculumDocument</code> (escopo nacional/estadual/exame) já comportaria trocar o bundle por outro país, mas a UI do app inteiro é hoje hardcoded em português (por instrução explícita do projeto).</div>
+          <div class="risk-mitig"><b>Mitigação:</b> não investir em i18n de UI especulativamente agora — o modelo de dado já não impede isso depois, e é só isso que precisa ser verdade hoje.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="diferencial">
+      <div class="sec-num">8</div>
+      <h2 class="serif">Diferencial competitivo</h2>
+      <p class="sec-intro">Nenhum dos concorrentes já mapeados no relatório de produto anterior — Forest, Anki, StudySmarter, Todoist/TickTick, Notion, Habitica, Google Agenda — tem currículo brasileiro oficial embutido. É o tipo de diferencial difícil de copiar rápido, porque a barreira é curadoria de dado, não código.</p>
+      <ul>
+        <li><b>É o "momento de tutor pessoal" levado ao extremo</b>: abrir o app pela primeira vez e a matéria já vir com conteúdo relevante é a versão mais forte possível do "esse app entende como eu estudo" identificado no relatório de produto.</li>
+        <li><b>Monetização já desenhada, agora com um gancho natural</b>: BNCC nacional gratuito para todos; cobertura estadual completa e atualização prioritária como parte do tier Premium já recomendado — sem nunca cobrar pela ferramenta central de estudar, consistente com a estratégia definida anteriormente.</li>
+        <li><b>Efeito de rede de conteúdo</b>: conforme mais currículos estaduais forem curados, o produto melhora para todo mundo daquele estado de uma vez — diferente de features que só beneficiam quem as usa individualmente.</li>
+      </ul>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  Relatório de análise arquitetural — nenhuma alteração de código foi feita. Constrói sobre a arquitetura de catálogo já definida no primeiro relatório técnico e sobre a Feature 1 (Perfil Educacional) já implementada.
+</footer>
